@@ -146,3 +146,17 @@ als Markdown mit YAML-Kopf statt reinem YAML; ausgearbeitet in `ARCHITEKTUR.md`:
    geschrieben, mit Quellenangabe. Die Originale bleiben lokal.
 7. **Kopierschutz ehrlich:** Was der Browser anzeigt, lässt sich immer kopieren. Login, Wasserzeichen, Rate-Limit und
    Freigabe schrecken ab und machen Quellen sichtbar, verhindern aber nichts ganz.
+
+## Neuplanung (Simon, 28.10.2026, nach Aufgabe 1)
+
+- Das Projekt wird vorerst eingeschränkt. Zuerst kommt eine Ablage für Formelsammlungen, Probeprüfungen und alte
+  Prüfungen ehemaliger Alumni. Den bisherigen Ordner dafür führt seit mehreren Semestern niemand mehr, und seit dem
+  neuen Vorgehen in den Semestern passt er ohnehin nicht mehr. Darum ein Neustart.
+- Die Unterrichtsunterlagen gehören nicht in die Ablage. Sie lassen sich in einer separaten App oder an einem anderen
+  Ort der Website einsehen.
+- Am Ende soll die Ablage nicht nur pro Fach, sondern für diverse Studiengänge funktionieren.
+- Die Vorlagen der Dozenten will Simon stark anpassen.
+- Der Study Hub soll vorerst ein Prototyp sein. Später sollen andere mitmachen, eventuell sogar die Schule, wenn es
+  wirklich sinnvoll wird.
+- Das Lernlabor (die Lernapp im Repo `apps`) wird vorerst stillgelegt.
+- Entscheide dazu: `AUFGABEN.md`, Abschnitt «Entscheide» (Neuplanung).
