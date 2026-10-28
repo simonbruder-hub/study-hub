@@ -41,7 +41,7 @@ Startsatz für einen neuen Chat:
 
 ## Aufgaben
 
-1. **Schritt 1 aus dem Briefing** (erledigt, siehe `docs/ARCHITEKTUR.md`).
+1. **Schritt 1 aus dem Briefing** (erledigt: PR `simonbruder-hub/study-hub#1`, siehe `docs/ARCHITEKTUR.md`).
    Ursprünglicher Auftrag: Datenschema (`FormulaNode`, `DocumentNode`, Relationen), Architektur für Datei-Speicher
    und Wasserzeichen mit `pdf-lib`, Komponenten-Struktur im Frontend. Noch kein UI-Code. Vorher die offenen Punkte
    klären.
