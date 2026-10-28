@@ -50,11 +50,29 @@ Startsatz für einen neuen Chat:
   Vermerk «alter Studienplan, Modul X».
 - 28.10.2026 (Neuplanung): Die Vorlagen der Dozenten will Simon stark anpassen. Sie kommen erst mit dem Formelbuch
   (Aufgabe 3).
+- 28.10.2026 (Aufgabe 2): Studiengänge und Module als Tabellen in Supabase, gepflegt in der App unter «Studienplan»,
+  auch von der Moderation eines Studiengangs. `inhalt/module.yaml` bleibt vorerst für das Formelbuch (Abgleich in
+  Aufgabe 3).
+- 28.10.2026 (Aufgabe 2): Studierende schätzen Probeprüfungen ein: viel leichter bis viel schwerer als die echte
+  Prüfung, eine Stimme pro Person, die Ablage zeigt die Verteilung.
+- 28.10.2026 (Aufgabe 2): Lösungen sind eigene Dokumente (Typ «Lösung», «offiziell» oder «von Studierenden»), an eine
+  Prüfung oder Probeprüfung gehängt, auch später und von jemand anderem. Dazu das Häkchen «Lösung im selben PDF».
+- 28.10.2026 (Aufgabe 2): Wer hochgeladen hat, sieht nur die Moderation. Alle sehen die Quelle: Verfasser, Semester,
+  bereitgestellt von Studierenden oder Alumni (mit Abschlussjahr).
+- 28.10.2026 (Aufgabe 2): Rate-Limit pro Person, gezählt in verschiedenen Dokumenten: ansehen 60 pro Stunde und 200 pro
+  Tag, herunterladen 10 pro Stunde und 30 pro Tag; schon geöffnete gehen immer. Entfernte Dateien können nicht wieder
+  hochgeladen werden.
+- 28.10.2026 (Aufgabe 2): PDF.js 6 statt 5 (Sicherheitslücke in 5.x beim Öffnen präparierter PDFs). Geschützte PDFs
+  lehnt das Hochladen ab, weil pdf-lib sie nicht mit dem Wasserzeichen versehen kann.
 
 ## Offen
 
-1. Studiengänge und Module des neuen Studienplans mit Kürzel, Name und Semester (Aufgabe 2).
-2. Domain der Mail-Adressen für Studierende (Aufgabe 2).
+1. Supabase einrichten (Simon, `supabase/README.md`): Projekt, Schema, Mail-Domain der Studierenden in
+   `allowed_logins`, Code-Mails, Auth Hook, eigener Mail-Versand (SMTP), GitHub-Variablen `VITE_SUPABASE_URL` und
+   `VITE_SUPABASE_ANON_KEY`, GitHub Pages mit Source «GitHub Actions». Danach mit echten Konten testen: Login,
+   Hochladen, Freigabe, Ansicht, Melden. Die Anbindung an Supabase ist bisher nur gegen die Datenbank-Regeln geprüft.
+2. Studiengänge und Module des neuen Studienplans mit Kürzel, Name und Semester: nach der Einrichtung in der App unter
+   «Studienplan» eintragen.
 3. Welche Module brauchen welches Simulationswerkzeug? (Aufgabe 5)
 
 ## Aufgaben
@@ -63,24 +81,23 @@ Startsatz für einen neuen Chat:
    Ursprünglicher Auftrag: Datenschema (`FormulaNode`, `DocumentNode`, Relationen), Architektur für Datei-Speicher
    und Wasserzeichen mit `pdf-lib`, Komponenten-Struktur im Frontend. Noch kein UI-Code. Vorher die offenen Punkte
    klären.
-2. **Ablage für Formelsammlungen und Prüfungen** (vorgezogen, früher Aufgabe 6 «Dokumenten-Tresor»):
-   Formelsammlungen, Probeprüfungen und alte Prüfungen hochladen, nach Studiengang, Semester und Modul ordnen,
-   freigeben und ansehen. Login mit Hochschul-Mail, Wasserzeichen, Rate-Limit. Dazu das Grundgerüst der App (Vite,
-   Preact, TypeScript, PWA, GitHub Pages), auf dem das Formelbuch später aufbaut. Grundlage: die Entscheide oben und
-   `docs/ARCHITEKTUR.md`, Abschnitt 3; den Abschnitt dabei anpassen.
-   Vorschlag, zu Beginn bestätigen: Studiengänge und Module als Tabellen in Supabase, gepflegt in der App, statt in
-   `inhalt/module.yaml`. So braucht die Moderation anderer Studiengänge kein Git.
-   Prüfungen sind Werke der Dozenten. Darum die Ablage geschlossen halten (nur mit Login), die Quelle zeigen,
-   Nutzungsregeln in der App und ein Knopf «Melden», damit Simon ein Dokument auf Anfrage sofort entfernen kann.
-   Idee zum Entscheiden: Studierende schätzen ein, ob eine Probeprüfung leichter oder schwerer ist als die echte.
-   Mitbringen: Studiengänge und Module des neuen Studienplans (z. B. den offiziellen Modulplan), Mail-Domain der
-   Studierenden, zwei bis drei Testdateien, ein neues Supabase-Projekt mit Project URL und Publishable key (den
-   geheimen Schlüssel nie in den Chat). In GitHub: Settings, Pages, Source «GitHub Actions».
+2. **Ablage für Formelsammlungen und Prüfungen** (erledigt: PR `simonbruder-hub/study-hub#3`, siehe
+   `docs/ARCHITEKTUR.md`, Abschnitt 3, und `supabase/README.md`). Offen: Einrichtung und Test mit echten Konten (oben
+   unter «Offen»).
+   Ursprünglicher Auftrag (vorgezogen, früher Aufgabe 6 «Dokumenten-Tresor»): Formelsammlungen, Probeprüfungen und
+   alte Prüfungen hochladen, nach Studiengang, Semester und Modul ordnen, freigeben und ansehen. Login mit
+   Hochschul-Mail, Wasserzeichen, Rate-Limit. Dazu das Grundgerüst der App (Vite, Preact, TypeScript, PWA, GitHub
+   Pages), auf dem das Formelbuch später aufbaut.
 3. **Formelbuch: Grundgerüst und erste Themen** (früher Aufgabe 2): einige Themen als Formel-Knoten (Vorlagen der
    Dozenten als Grundlage, stark angepasst, eigener Standard), Explorer und Prüfungs-Formelsammlung zum Drucken.
    Danach Experten zeigen. Aufbau nach `docs/ARCHITEKTUR.md`, Abschnitt 4. Die Daten liefert
    `npm run inhalt -- --json`, der Text wird dabei zu HTML. Die vier Beispielknoten nach dem eigenen Standard
    überarbeiten.
+   Vorlage aus dem Modul «Effiziente Leistungselektronik» (28.10.2026 im Chat geteilt, Originale bleiben lokal):
+   ein Jupyter Book, Kapitel als `.ipynb` mit MyST-Markdown und ohne Code (Lernziele, Theorie mit nummerierten
+   Formeln, Übungen in Tabs, Lernkontrolle, Hinweise, Videos, Widgets, PLECS-Simulationen). Prüfen, ob der Text der
+   Knoten MyST-Markdown verwenden soll, damit sich die Vorlagen leichter übernehmen lassen. Module aus Supabase mit
+   `inhalt/module.yaml` abgleichen.
 4. **Lernlabor umziehen** (das Lernlabor ist vorerst stillgelegt; vor dem Start klären, ob der Umzug noch gewünscht
    ist): Simulator, Theorie und Aufgaben aus `apps/lernlabor/` übernehmen, die Theorie in
    Formel-Knoten überführen, Schaltungen an die Knoten hängen. Im Repo `apps` Startseite, Taktwerk-Links und eine
@@ -99,3 +116,15 @@ Startsatz für einen neuen Chat:
 - PRs in der Cloud über `gh api repos/simonbruder-hub/study-hub/pulls` (`gh pr create` geht nicht).
 - Repo-Einstellungen (umbenennen, Pages einschalten, Sichtbarkeit) kann Claude nicht ändern, das macht Simon in GitHub.
   Für GitHub Pages: Settings, Pages, Source «GitHub Actions».
+- App: `npm run dev` (http://localhost:5175), `npm run typecheck`, `npm test` (Unit-Tests, dazu die Schreibregeln
+  für das ganze Repo), `npm run db:test` (Regeln der Ablage, braucht PostgreSQL 16), `npm run build`.
+- Ablage ohne Supabase: `npm run dev:demo` (Code 123456, `admin@students.example.ch` ist Admin). End-to-End-Tests:
+  `npm run build:demo && npm run test:e2e`, in der Cloud mit `PW_CHROMIUM=/opt/pw-browsers/chromium`.
+- `pkill` immer in einem eigenen Bash-Aufruf und mit Klammer im Muster (`pkill -f "vite previe[w]"`), sonst trifft
+  der Befehl die eigene Shell.
+- Der Chromium in der Cloud verwirft Dateinamen mit Umlauten beim Herunterladen; die App schreibt Umlaute im
+  Dateinamen darum aus.
+- pdf-lib ist nach ES5 übersetzt: `instanceof EncryptedPDFError` greift nicht, geschützte PDFs erkennt
+  `src/vault/pdfcheck.ts` darum auch am Text der Meldung.
+- Ein heruntergeladenes Programm (z. B. PostgREST für einen API-Test) darf Claude in der Cloud nicht ausführen; die
+  Anbindung an Supabase lässt sich darum erst mit dem echten Projekt testen.
