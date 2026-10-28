@@ -119,7 +119,8 @@ Startsatz für einen neuen Chat:
 - App: `npm run dev` (http://localhost:5175), `npm run typecheck`, `npm test` (Unit-Tests, dazu die Schreibregeln
   für das ganze Repo), `npm run db:test` (Regeln der Ablage, braucht PostgreSQL 16), `npm run build`.
 - Ablage ohne Supabase: `npm run dev:demo` (Code 123456, `admin@students.example.ch` ist Admin). End-to-End-Tests:
-  `npm run build:demo && npm run test:e2e`, in der Cloud mit `PW_CHROMIUM=/opt/pw-browsers/chromium`.
+  `npm run build && npm run build:demo && npm run test:e2e` (Demo-Build und Produktions-Build ohne Supabase-Variablen),
+  in der Cloud mit `PW_CHROMIUM=/opt/pw-browsers/chromium`.
 - `pkill` immer in einem eigenen Bash-Aufruf und mit Klammer im Muster (`pkill -f "vite previe[w]"`), sonst trifft
   der Befehl die eigene Shell.
 - Der Chromium in der Cloud verwirft Dateinamen mit Umlauten beim Herunterladen; die App schreibt Umlaute im

@@ -15,8 +15,9 @@ import { Upload } from './Upload';
 export function Vault() {
   useEffect(() => { void startVault(); }, []);
   const a = api.value;
-  if (a === undefined || session.value === undefined) return <Loading />;
+  if (a === undefined) return <Loading />;
   if (a === null) return <NotConfigured />;
+  if (session.value === undefined) return <Loading />;
   if (!session.value) return <Login />;
   if (meError.value) {
     return (

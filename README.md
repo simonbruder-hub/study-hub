@@ -39,8 +39,8 @@ npm run inhalt     # Inhalte: Schema, Verweise, Kreise, Analogien, LaTeX, Schrei
 npm run typecheck  # TypeScript
 npm test           # Unit-Tests, Schreibregeln für das ganze Repo
 npm run db:test    # Regeln der Ablage gegen PostgreSQL 16
-npm run build:demo && npm run test:e2e         # Abläufe im Browser
-npm run inhalt -- --json dist/inhalt.json      # zusätzlich die Daten für das Formelbuch schreiben
+npm run build && npm run build:demo && npm run test:e2e   # Abläufe im Browser
+npm run inhalt -- --json dist/inhalt.json   # zusätzlich die Daten für das Formelbuch schreiben
 ```
 
 Verwandt: [`simonbruder-hub/apps`](https://github.com/simonbruder-hub/apps) mit Taktwerk, Kochbuch und dem
