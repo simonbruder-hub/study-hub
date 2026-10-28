@@ -4,7 +4,7 @@ Vernetztes Formelbuch, Prüfungs-Formelsammlungen, Simulationen und Lernhilfen f
 Elektrotechnik. Studentenprojekt, Arbeitsname.
 
 Stand: Architektur und Datenmodell stehen (Aufgabe 1), dazu vier Beispielknoten mit Prüfung in der CI. Noch keine
-App.
+App. Als Nächstes die Ablage für Formelsammlungen und Prüfungen (Aufgabe 2).
 
 | Datei | Inhalt |
 |---|---|

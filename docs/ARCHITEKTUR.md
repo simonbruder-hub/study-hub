@@ -1,7 +1,8 @@
 # Architektur
 
 Ergebnis von Aufgabe 1 (28.10.2026): Datenmodell, Relationen, Speicher mit Wasserzeichen und Aufbau des Frontends,
-noch ohne UI-Code. Was gilt: zuerst die Entscheide in `AUFGABEN.md`, dann dieses Dokument, dann `BRIEFING.md`.
+noch ohne UI-Code. Was gilt: zuerst die Entscheide in `AUFGABEN.md`, dann dieses Dokument, dann `BRIEFING.md`. Nach
+der Neuplanung vom 28.10.2026 kommt die Ablage (Abschnitt 3) zuerst, die Nummern der Aufgaben sind angepasst.
 
 ## Überblick
 
@@ -86,7 +87,7 @@ Gerade durch den Ursprung mit der Steigung $G = 1/R$.
 | `sources` | | `title`, `author`, `year`, `url`; Pflicht, wenn der Inhalt auf einer Vorlage beruht |
 | Text | | unter dem Kopf: Erklärung als Markdown mit `$...$` und `$$...$$`; nicht in der Formelsammlung |
 
-Simulationen (`learning_resources.simulations`), das genaue Format pro Werkzeug folgt in Aufgabe 4:
+Simulationen (`learning_resources.simulations`), das genaue Format pro Werkzeug folgt in Aufgabe 5:
 
 | `tool` | braucht | Bedeutung |
 |---|---|---|
@@ -165,7 +166,7 @@ nodes         alle Knoten, sortiert nach Thema, Stufe und Titel, mit allen Felde
               id, file, topic, discipline, required_by (wer baut darauf auf), analogies (IDs)
 ```
 
-Fehlende Listen sind leer statt undefiniert, die App muss das nicht prüfen. In Aufgabe 2 wird der Text dabei zu HTML
+Fehlende Listen sind leer statt undefiniert, die App muss das nicht prüfen. In Aufgabe 3 wird der Text dabei zu HTML
 (Markdown und KaTeX schon beim Build), die App zeigt ihn nur noch an.
 
 ## 2. Relationen
@@ -194,10 +195,19 @@ ZUGRIFF sind Tabellen in Supabase, alles andere sind Dateien im Repo. Die Verbin
 ohne Fremdschlüssel, denn die Knoten liegen nicht in der Datenbank. Beim Hochladen bietet die App nur IDs an, die es
 gibt.
 
-## 3. Dokumenten-Tresor
+## 3. Ablage (Dokumenten-Tresor)
 
-Umsetzung in Aufgabe 6. Login nur mit der Mail-Adresse der Hochschule, danach schaltet Simon jede Person frei. Ohne
-Login und Freischaltung ist im Tresor nichts sichtbar. Formelbuch und Prüfungs-Modus bleiben offen.
+Vorgezogen als Aufgabe 2 (Neuplanung 28.10.2026). Die Ablage ist von Studierenden für Studierende. Sie nimmt
+Formelsammlungen, Probeprüfungen und alte Prüfungen auf, geordnet nach Studiengang, Semester und Modul, für mehrere
+Studiengänge. Unterrichtsunterlagen gehören
+nicht hinein. Sehen und Hochladen nur mit Login über die Mail-Adresse für Studierende der Hochschule, ohne
+Freischaltung pro Person. Moderiert werden die Dokumente, vorerst nur durch Simon. Alumni ohne Hochschul-Mail schicken
+ihre Prüfungen an Simon, Simon lädt sie hoch. Formelbuch und Prüfungs-Modus bleiben ohne Login offen.
+
+> Der Rest dieses Abschnitts stammt aus Aufgabe 1 und wird in Aufgabe 2 angepasst. Bis dahin gelten die Entscheide in
+> `AUFGABEN.md`, vor allem: keine Freischaltung pro Person (`profiles.status`, Rechte und Login unten ändern sich),
+> Dokumenttypen `formelsammlung`, `probepruefung` und `pruefung`, Studiengänge und Module als eigene Tabellen
+> (Vorschlag), Vermerk für Prüfungen aus dem alten Studienplan, Knopf «Melden» zum Entfernen auf Anfrage.
 
 ### Tabellen
 
@@ -310,7 +320,7 @@ Quelle sichtbar, verhindern aber nicht alles.
   auch in der installierten PWA und ohne Weiterleitung, das Problem mit der 404-Seite aus Taktwerk fällt weg.
 - Nur Adressen der Hochschule: Ein Auth Hook «Before User Created» prüft die Domain. Danach steht die Person auf
   `pending`, bis Simon sie freischaltet.
-- Grenzen des Gratis-Plans (vor Aufgabe 6 nachprüfen): 1 GB Speicher, 50 MB pro Datei, 500 MB Datenbank. Für den
+- Grenzen des Gratis-Plans (vor Aufgabe 2 nachprüfen): 1 GB Speicher, 50 MB pro Datei, 500 MB Datenbank. Für den
   Anfang reicht das.
 
 ## 4. Frontend
@@ -322,13 +332,13 @@ Gleicher Stack wie Lernlabor und Kochbuch: Vite, Preact mit Signals, TypeScript,
 
 | Adresse | Ansicht | Aufgabe |
 |---|---|---|
-| `#/` | Start: Suche, Fachgebiete, zuletzt angesehen | 2 |
-| `#/explorer?thema=gleichstrom&stufe=2` | Explorer: Fachgebiet, Thema, Knoten; Stufen aufklappen | 2 |
-| `#/k/ohmsches-gesetz` | Knoten: Formel, Variablen, Text, Voraussetzungen, baut darauf auf, Analogien, Lernhilfen, Quellen | 2, 5 |
-| `#/pruefung?modul=et-grundlagen` | Formelsammlung eines Moduls, bereit zum Drucken | 2 |
-| `#/pruefung?k=ohmsches-gesetz,rc-laden` | eigene Auswahl; die Adresse lässt sich teilen und speichern | 2 |
-| `#/labor?bsp=rc` | Lernlabor-Baukasten | 3 |
-| `#/tresor`, `#/tresor/d/<id>`, `#/tresor/neu`, `#/tresor/moderation` | Tresor | 6 |
+| `#/` | Start: Suche, Fachgebiete, zuletzt angesehen | 2, 3 |
+| `#/explorer?thema=gleichstrom&stufe=2` | Explorer: Fachgebiet, Thema, Knoten; Stufen aufklappen | 3 |
+| `#/k/ohmsches-gesetz` | Knoten: Formel, Variablen, Text, Voraussetzungen, baut darauf auf, Analogien, Lernhilfen, Quellen | 3, 6 |
+| `#/pruefung?modul=et-grundlagen` | Formelsammlung eines Moduls, bereit zum Drucken | 3 |
+| `#/pruefung?k=ohmsches-gesetz,rc-laden` | eigene Auswahl; die Adresse lässt sich teilen und speichern | 3 |
+| `#/labor?bsp=rc` | Lernlabor-Baukasten | 4 |
+| `#/tresor`, `#/tresor/d/<id>`, `#/tresor/neu`, `#/tresor/moderation` | Ablage | 2 |
 
 ### Ordner und Komponenten
 
@@ -350,9 +360,9 @@ src/
     explorer/    Explorer.tsx, TopicTree.tsx, LevelFilter.tsx
     node/        NodePage.tsx, Prerequisites.tsx, Analogies.tsx, Resources.tsx, Sources.tsx
     exam/        ExamPage.tsx, Selection.tsx, PrintSheet.tsx, print.css, später texExport.ts
-  learn/         Aufgabe 5: PromptButton.tsx, prompt.ts, Videos.tsx, SliderGraph.tsx
-  sim/           Aufgaben 3 und 4: Simulation.tsx wählt nach tool; Rechenkern und Baukasten aus dem Lernlabor
-  vault/         Aufgabe 6, lädt erst beim Öffnen: supabase.ts, Login.tsx, DocumentList.tsx,
+  learn/         Aufgabe 6: PromptButton.tsx, prompt.ts, Videos.tsx, SliderGraph.tsx
+  sim/           Aufgaben 4 und 5: Simulation.tsx wählt nach tool; Rechenkern und Baukasten aus dem Lernlabor
+  vault/         Aufgabe 2, lädt erst beim Öffnen: supabase.ts, Login.tsx, DocumentList.tsx,
                  PdfViewer.tsx (PDF.js), Upload.tsx, Moderation.tsx, watermark.ts (pdf-lib)
   styles/        app.css
 ```
@@ -379,8 +389,8 @@ src/
 
 | Aufgabe | aus diesem Entwurf |
 |---|---|
-| 2 | App mit dieser Struktur, Text beim Build als HTML, echte Module und erste Themen nach den Vorlagen, Explorer, Knotenseite, Prüfungs-Modus, Workflow für GitHub Pages |
-| 3 | Lernlabor nach `src/sim/`, Theorie in Knoten, Beispiele über `tool: lernlabor` an die Knoten; KaTeX dabei von 0.16 auf 0.18 |
-| 4 | Werkzeuge pro Modul in `module.yaml`, Format pro Werkzeug genauer, zwei Beispiele |
-| 5 | Prompt-Knopf, Regler mit Graph, Videos und Links |
-| 6 | `supabase/schema.sql` nach Abschnitt 3, mit Tests der Regeln wie bei Taktwerk |
+| 2 | Ablage: Grundgerüst der App mit Workflow für GitHub Pages, `supabase/schema.sql` nach Abschnitt 3 (an die Neuplanung angepasst) mit Tests der Regeln wie bei Taktwerk, Hochladen, Ordnen, Freigabe, Ansicht |
+| 3 | Formelbuch: Text beim Build als HTML, erste Themen nach den Vorlagen, Explorer, Knotenseite, Prüfungs-Modus |
+| 4 | Lernlabor nach `src/sim/`, Theorie in Knoten, Beispiele über `tool: lernlabor` an die Knoten; KaTeX dabei von 0.16 auf 0.18 |
+| 5 | Werkzeuge pro Modul, Format pro Werkzeug genauer, zwei Beispiele |
+| 6 | Prompt-Knopf, Regler mit Graph, Videos und Links |
