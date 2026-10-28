@@ -1,0 +1,24 @@
+# yaml-language-server: $schema=../schema/analogien.schema.json
+# Gleiche Mathematik in verschiedenen Fachgebieten. Jede Analogie steht nur hier.
+# mapping: Grössen, die sich entsprechen, in der Reihenfolge von nodes.
+ohm-thermisch:
+  title: Widerstand gegen einen Fluss
+  nodes: [ohmsches-gesetz, waermewiderstand]
+  mapping:
+    - [spannung, temperaturdifferenz]
+    - [strom, waermestrom]
+    - [widerstand, waermewiderstand]
+  note: >-
+    Eine Spannung treibt Strom durch einen Widerstand, eine Temperaturdifferenz treibt Wärme
+    durch einen Wärmewiderstand. Wärmewiderstände in Reihe addieren sich wie elektrische.
+rc-thermisch:
+  title: Speicher mit Zeitkonstante
+  nodes: [rc-laden, erwaermung]
+  mapping:
+    - [spannung, temperaturdifferenz]
+    - [strom, waermestrom]
+    - [widerstand, waermewiderstand]
+    - [kapazitaet, waermekapazitaet]
+  note: >-
+    Ein Körper erwärmt sich wie ein Kondensator, der geladen wird: gleiche Differentialgleichung
+    erster Ordnung, gleiche Zeitkonstante. Nach etwa 5 τ ist der Endwert praktisch erreicht.

@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "themen.schema.json",
+  "title": "Fachgebiete und Themen (inhalt/themen.yaml)",
+  "description": "Jedes Thema ist ein Ordner in inhalt/knoten/. Das Fachgebiet ordnet die Themen und zeigt bei Analogien, woher ein Knoten kommt.",
+  "type": "object",
+  "propertyNames": { "$ref": "gemeinsam.schema.json#/$defs/id" },
+  "additionalProperties": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["title", "topics"],
+    "properties": {
+      "title": { "$ref": "gemeinsam.schema.json#/$defs/text" },
+      "topics": {
+        "type": "object",
+        "propertyNames": { "$ref": "gemeinsam.schema.json#/$defs/id" },
+        "additionalProperties": { "$ref": "gemeinsam.schema.json#/$defs/text" },
+        "description": "Thema (Ordnername) mit Titel, in der Reihenfolge der Anzeige"
+      }
+    }
+  }
+}

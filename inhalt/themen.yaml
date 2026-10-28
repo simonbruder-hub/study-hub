@@ -1,0 +1,12 @@
+# yaml-language-server: $schema=../schema/themen.schema.json
+# Fachgebiete und ihre Themen. Jedes Thema ist ein Ordner in inhalt/knoten/.
+elektrotechnik:
+  title: Elektrotechnik
+  topics:
+    gleichstrom: Gleichstrom
+    wechselstrom: Wechselstrom
+    schaltvorgaenge: Schaltvorgänge
+waermelehre:
+  title: Wärmelehre
+  topics:
+    waermetransport: Wärmetransport

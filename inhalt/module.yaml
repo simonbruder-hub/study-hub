@@ -1,0 +1,6 @@
+# yaml-language-server: $schema=../schema/module.schema.json
+# Module (Fächer) mit Semester und Simulationswerkzeugen.
+# Beispiel: In Aufgabe 2 durch die echten Module ersetzen, die Werkzeuge pro Modul folgen in Aufgabe 4.
+et-grundlagen:
+  title: Grundlagen der Elektrotechnik
+  tools: [lernlabor, python]

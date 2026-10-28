@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "module.schema.json",
+  "title": "Module (inhalt/module.yaml)",
+  "description": "Module (Fächer) der Hochschule. Knoten verweisen in modules darauf, daraus entsteht die Formelsammlung pro Modul.",
+  "type": "object",
+  "propertyNames": { "$ref": "gemeinsam.schema.json#/$defs/id" },
+  "additionalProperties": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["title"],
+    "properties": {
+      "title": { "$ref": "gemeinsam.schema.json#/$defs/text" },
+      "semester": { "type": "integer", "minimum": 1, "maximum": 12 },
+      "school": { "$ref": "gemeinsam.schema.json#/$defs/text" },
+      "tools": {
+        "type": "array",
+        "items": { "$ref": "gemeinsam.schema.json#/$defs/tool" },
+        "uniqueItems": true,
+        "description": "Simulationswerkzeuge, die dieses Modul verwendet"
+      }
+    }
+  }
+}
