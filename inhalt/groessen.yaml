@@ -1,0 +1,15 @@
+# yaml-language-server: $schema=../schema/groessen.schema.json
+# Physikalische Grössen, jede nur einmal. Zeichen und Einheit in LaTeX, die Einheit wird aufrecht gesetzt.
+spannung: { name: Elektrische Spannung, symbol: U, unit: V }
+strom: { name: Elektrische Stromstärke, symbol: I, unit: A }
+widerstand: { name: Elektrischer Widerstand, symbol: R, unit: '\Omega' }
+leitwert: { name: Elektrischer Leitwert, symbol: G, unit: S }
+kapazitaet: { name: Kapazität, symbol: C, unit: F }
+zeit: { name: Zeit, symbol: t, unit: s }
+temperaturdifferenz: { name: Temperaturdifferenz, symbol: '\Delta T', unit: K }
+waermestrom: { name: Wärmestrom, symbol: '\Phi', unit: W }
+waermewiderstand: { name: Wärmewiderstand, symbol: 'R_{th}', unit: 'K/W' }
+waermekapazitaet: { name: Wärmekapazität, symbol: 'C_{th}', unit: 'J/K' }
+waermeleitfaehigkeit: { name: Wärmeleitfähigkeit, symbol: '\lambda', unit: 'W/(m\,K)' }
+laenge: { name: Länge, symbol: l, unit: m }
+flaeche: { name: Fläche, symbol: A, unit: 'm^2' }

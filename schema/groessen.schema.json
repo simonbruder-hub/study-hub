@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "groessen.schema.json",
+  "title": "Physikalische Grössen (inhalt/groessen.yaml)",
+  "description": "Jede Grösse steht einmal hier, mit Name, Zeichen und Einheit. Knoten verweisen in variables[].quantity darauf.",
+  "type": "object",
+  "propertyNames": { "$ref": "gemeinsam.schema.json#/$defs/id" },
+  "additionalProperties": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["name", "symbol", "unit"],
+    "properties": {
+      "name": { "$ref": "gemeinsam.schema.json#/$defs/text" },
+      "symbol": {
+        "$ref": "gemeinsam.schema.json#/$defs/latex",
+        "description": "Übliches Zeichen"
+      },
+      "unit": {
+        "$ref": "gemeinsam.schema.json#/$defs/latex",
+        "description": "SI-Einheit in LaTeX, wird aufrecht gesetzt; 1 bei Grössen ohne Einheit"
+      }
+    }
+  }
+}

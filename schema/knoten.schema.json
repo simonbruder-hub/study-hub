@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "knoten.schema.json",
+  "title": "Formel-Knoten (FormulaNode)",
+  "description": "YAML-Kopf einer Datei inhalt/knoten/<thema>/<id>.md. Die ID ist der Dateiname, das Thema der Ordner. Unter dem Kopf folgt die Erklärung als Markdown mit $...$-Formeln.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["title", "latex_expression", "level", "variables"],
+  "properties": {
+    "title": { "$ref": "gemeinsam.schema.json#/$defs/text" },
+    "latex_expression": {
+      "$ref": "gemeinsam.schema.json#/$defs/latex",
+      "description": "Hauptformel"
+    },
+    "forms": {
+      "type": "array",
+      "items": { "$ref": "gemeinsam.schema.json#/$defs/latex" },
+      "description": "Weitere Formen, die in der Formelsammlung mitgedruckt werden"
+    },
+    "level": {
+      "enum": [1, 2, 3],
+      "description": "1 = Grundlagen, 2 = Vertiefung, 3 = Spezialisierung"
+    },
+    "variables": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/variable" }
+    },
+    "modules": {
+      "$ref": "gemeinsam.schema.json#/$defs/ids",
+      "description": "IDs aus inhalt/module.yaml"
+    },
+    "prerequisites": {
+      "$ref": "gemeinsam.schema.json#/$defs/ids",
+      "description": "IDs der Knoten, die man vorher kennen muss"
+    },
+    "learning_resources": { "$ref": "#/$defs/learning_resources" },
+    "sources": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/source" },
+      "description": "Quellen, Pflicht bei Inhalten nach einer Vorlage"
+    }
+  },
+  "$defs": {
+    "variable": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["symbol", "quantity"],
+      "properties": {
+        "symbol": {
+          "$ref": "gemeinsam.schema.json#/$defs/latex",
+          "description": "Zeichen wie in der Formel, z. B. u_C"
+        },
+        "quantity": {
+          "$ref": "gemeinsam.schema.json#/$defs/id",
+          "description": "Grösse aus inhalt/groessen.yaml, liefert Name und Einheit"
+        },
+        "meaning": {
+          "$ref": "gemeinsam.schema.json#/$defs/text",
+          "description": "Bedeutung in diesem Knoten, falls genauer als der Name der Grösse"
+        }
+      }
+    },
+    "link": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "url"],
+      "properties": {
+        "title": { "$ref": "gemeinsam.schema.json#/$defs/text" },
+        "url": { "$ref": "gemeinsam.schema.json#/$defs/url" }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title"],
+      "properties": {
+        "title": {
+          "$ref": "gemeinsam.schema.json#/$defs/text",
+          "description": "z. B. «Skript Elektrotechnik 1, Kapitel 2»"
+        },
+        "author": { "$ref": "gemeinsam.schema.json#/$defs/text" },
+        "year": { "type": "integer", "minimum": 1900, "maximum": 2100 },
+        "url": { "$ref": "gemeinsam.schema.json#/$defs/url" }
+      }
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^(?!.*\\.\\.)[A-Za-z0-9_][A-Za-z0-9_./-]*$",
+      "description": "Datei relativ zur Knotendatei, ohne .."
+    },
+    "simulation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tool"],
+      "properties": {
+        "tool": { "$ref": "gemeinsam.schema.json#/$defs/tool" },
+        "title": { "$ref": "gemeinsam.schema.json#/$defs/text" },
+        "example": {
+          "$ref": "gemeinsam.schema.json#/$defs/id",
+          "description": "lernlabor: ID des Beispiels im Baukasten"
+        },
+        "circuit": {
+          "$ref": "gemeinsam.schema.json#/$defs/text",
+          "description": "falstad: Schaltung als Text"
+        },
+        "file": {
+          "$ref": "#/$defs/path",
+          "description": "python, plecs, simulink: Skript oder Modell neben dem Knoten"
+        },
+        "image": { "$ref": "#/$defs/path", "description": "Bild der Schaltung" },
+        "result": { "$ref": "#/$defs/path", "description": "Bild des Ergebnisses, z. B. ein Plot" },
+        "params": {
+          "type": "object",
+          "additionalProperties": { "type": ["number", "string"] },
+          "description": "Parameter der Simulation, z. B. R: 1k"
+        }
+      },
+      "allOf": [
+        {
+          "if": { "type": "object", "properties": { "tool": { "const": "lernlabor" } } },
+          "then": { "required": ["example"] }
+        },
+        {
+          "if": { "type": "object", "properties": { "tool": { "const": "falstad" } } },
+          "then": { "required": ["circuit"] }
+        },
+        {
+          "if": { "type": "object", "properties": { "tool": { "enum": ["python", "plecs", "simulink"] } } },
+          "then": { "required": ["file"] }
+        }
+      ]
+    },
+    "learning_resources": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "simulations": { "type": "array", "items": { "$ref": "#/$defs/simulation" } },
+        "videos": { "type": "array", "items": { "$ref": "#/$defs/link" } },
+        "links": { "type": "array", "items": { "$ref": "#/$defs/link" } },
+        "prompt": {
+          "$ref": "gemeinsam.schema.json#/$defs/text",
+          "description": "Eigene Vorlage für den KI-Prompt, sonst gilt die Standardvorlage"
+        }
+      }
+    }
+  }
+}

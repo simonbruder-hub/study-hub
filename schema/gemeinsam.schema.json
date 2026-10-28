@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "gemeinsam.schema.json",
+  "title": "Gemeinsame Bausteine der Inhalts-Schemas",
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "description": "Kleinbuchstaben, Ziffern und Bindestriche, ohne Umlaute, z. B. waermewiderstand"
+    },
+    "ids": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/id" },
+      "uniqueItems": true
+    },
+    "latex": {
+      "type": "string",
+      "minLength": 1,
+      "description": "LaTeX ohne Dollarzeichen, muss mit KaTeX rendern"
+    },
+    "text": { "type": "string", "minLength": 1 },
+    "url": { "type": "string", "pattern": "^https://\\S+$" },
+    "tool": {
+      "enum": ["lernlabor", "python", "falstad", "plecs", "simulink"],
+      "description": "Simulationswerkzeug"
+    }
+  }
+}

@@ -123,7 +123,8 @@ Bitte schreibe noch keinen kompletten UI-Code. Liefere mir zuerst:
 
 ## Antworten und Vorschläge (Claude, 28.10.2026)
 
-Die Entscheide stehen in `AUFGABEN.md`. Hier die Vorschläge zu den offenen Fragen, im ersten Chat bestätigen:
+Die Entscheide stehen in `AUFGABEN.md`. Hier die Vorschläge zu den offenen Fragen. In Aufgabe 1 bestätigt, Punkt 2
+als Markdown mit YAML-Kopf statt reinem YAML; ausgearbeitet in `ARCHITEKTUR.md`:
 
 1. **Druck:** Browser-Druck mit KaTeX und CSS `@media print`, wie im Briefing empfohlen. KaTeX nutzt das Lernlabor
    schon. Später optional ein Export als `.tex` für Overleaf, die Formeln sind ja ohnehin LaTeX.

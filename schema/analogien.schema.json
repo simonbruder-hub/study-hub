@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "analogien.schema.json",
+  "title": "Analogien (inhalt/analogien.yaml)",
+  "description": "Knoten mit derselben mathematischen Struktur in verschiedenen Fachgebieten. Jede Analogie steht nur hier, die Knoten bekommen den Verweis beim Build.",
+  "type": "object",
+  "propertyNames": { "$ref": "gemeinsam.schema.json#/$defs/id" },
+  "additionalProperties": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["title", "nodes", "mapping"],
+    "properties": {
+      "title": { "$ref": "gemeinsam.schema.json#/$defs/text" },
+      "nodes": {
+        "type": "array",
+        "items": { "$ref": "gemeinsam.schema.json#/$defs/id" },
+        "minItems": 2,
+        "uniqueItems": true
+      },
+      "mapping": {
+        "type": "array",
+        "minItems": 1,
+        "items": {
+          "type": "array",
+          "items": { "$ref": "gemeinsam.schema.json#/$defs/id" },
+          "minItems": 2
+        },
+        "description": "Zeilen mit Grössen, die sich entsprechen, in der Reihenfolge von nodes"
+      },
+      "note": { "$ref": "gemeinsam.schema.json#/$defs/text" }
+    }
+  }
+}
