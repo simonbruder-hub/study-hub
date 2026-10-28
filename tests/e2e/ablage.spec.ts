@@ -37,12 +37,16 @@ async function pdf(title: string, pages = 2): Promise<Buffer> {
 
 async function upload(page: Page, opts: { module: string; type: string; author: string; file: Buffer; name: string }) {
   await page.getByRole('link', { name: 'Hochladen', exact: true }).first().click();
-  await page.getByLabel('Modul').selectOption({ label: opts.module });
+  await expect(page.getByRole('heading', { name: 'Hochladen' })).toBeVisible();
+  await page.getByRole('combobox', { name: /^Modul/ }).selectOption({ label: opts.module });
   await page.getByRole('radio', { name: opts.type, exact: true }).check();
   await page.getByLabel('Verfasst von').fill(opts.author);
   await page.getByLabel('PDF (höchstens 20 MB)').setInputFiles({ name: opts.name, mimeType: 'application/pdf', buffer: opts.file });
   await expect(page.getByText(/Seiten?,/)).toBeVisible();
-  await page.getByText('Ich halte mich an die').click();
+  await page.getByRole('checkbox', { name: /Ich halte mich an die/ }).check();
+  // Fehlt etwas, nennt die Seite es; so zeigt ein Fehler in der CI gleich den Grund
+  await expect(page.getByText(/Noch offen/)).toHaveCount(0);
+  await expect(page.getByLabel('Verfasst von')).toHaveValue(opts.author);
   await page.getByRole('button', { name: 'Hochladen', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Danke!' })).toBeVisible();
 }
@@ -111,6 +115,7 @@ test('Stöbern, Dokument ansehen, einschätzen, melden, herunterladen', async ({
 test('Hochladen, in «Meine Uploads» sehen und zurückziehen', async ({ page }) => {
   await login(page, 'anna@students.example.ch');
   await page.getByRole('link', { name: 'Hochladen', exact: true }).first().click();
+  await expect(page.getByRole('heading', { name: 'Hochladen' })).toBeVisible();
   await page.getByLabel('PDF (höchstens 20 MB)').setInputFiles({ name: 'notiz.txt', mimeType: 'text/plain', buffer: Buffer.from('kein PDF') });
   await expect(page.getByRole('alert')).toContainText('kein lesbares PDF');
 

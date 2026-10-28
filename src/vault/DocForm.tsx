@@ -1,5 +1,5 @@
 /** Angaben zu einem Dokument; beim Hochladen und in der Moderation (Korrektur) */
-import { useEffect, useState } from 'preact/hooks';
+import { useEffect, useState, type Dispatch, type StateUpdater } from 'preact/hooks';
 import { SOLUTION_KIND_LABEL, TYPE_LABEL, suggestTitle } from './labels';
 import { activePrograms, api } from './state';
 import { DOC_TYPES, EXAM_TYPES, type DocFields, type Plan, type SolutionKind, type Term } from './types';
@@ -15,7 +15,8 @@ const AUTHOR_HINT: Record<string, string> = {
 
 interface Props {
   value: DocFields;
-  onChange: (v: DocFields) => void;
+  /** wie ein setState: Änderungen gehen immer vom aktuellen Stand aus */
+  onChange: Dispatch<StateUpdater<DocFields>>;
   plan: Plan;
   programId?: string;
   /** Titel automatisch vorschlagen, bis jemand ihn selbst ändert */
@@ -36,17 +37,21 @@ export function DocForm({ value: f, onChange, plan: p, programId, autoTitle }: P
   const examTitle = exams.data?.find((d) => d.id === f.solution_of)?.title;
 
   function set(patch: Partial<DocFields>) {
-    const next = { ...f, ...patch };
-    if (next.doc_type !== 'loesung') { next.solution_of = null; next.solution_kind = null; }
-    if (!EXAM_TYPES.includes(next.doc_type)) next.includes_solution = false;
-    if (next.provenance !== 'alumni') next.alumni_year = null;
-    onChange(next);
+    onChange((prev) => {
+      const next = { ...prev, ...patch };
+      if (next.doc_type !== 'loesung') { next.solution_of = null; next.solution_kind = null; }
+      if (!EXAM_TYPES.includes(next.doc_type)) next.includes_solution = false;
+      if (next.provenance !== 'alumni') next.alumni_year = null;
+      return next;
+    });
   }
-  // Titelvorschlag nachführen
+  // Titelvorschlag nachführen; vom aktuellen Stand aus, sonst gingen schnelle Eingaben verloren
   useEffect(() => {
     if (titleTouched) return;
-    const t = suggestTitle(f, examTitle);
-    if (t !== f.title) onChange({ ...f, title: t });
+    onChange((prev) => {
+      const t = suggestTitle(prev, examTitle);
+      return t === prev.title ? prev : { ...prev, title: t };
+    });
   }, [titleTouched, f.doc_type, f.year, f.term, examTitle]);
 
   const links = p.links.filter((l) => l.program_id === program)
@@ -188,7 +193,7 @@ export function DocForm({ value: f, onChange, plan: p, programId, autoTitle }: P
       <label class="field">
         <span>Titel</span>
         <input type="text" maxLength={160} value={f.title}
-          onInput={(e) => { setTitleTouched(true); onChange({ ...f, title: e.currentTarget.value }); }} />
+          onInput={(e) => { const title = e.currentTarget.value; setTitleTouched(true); onChange((prev) => ({ ...prev, title })); }} />
       </label>
     </div>
   );
