@@ -182,6 +182,16 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); ou
 .table input, .table select { min-height: 34px; padding: 4px 8px; }
 .table-wrap { overflow-x: auto; }
 
+/* Tabellen zum Bearbeiten: auf schmalen Bildschirmen eine Karte pro Zeile */
+@media (max-width: 640px) {
+  .table-stack thead { display: none; }
+  .table-stack, .table-stack tbody, .table-stack tr, .table-stack td { display: block; width: 100%; }
+  .table-stack tr { border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; margin-bottom: 8px; background: var(--surface); }
+  .table-stack td { border: none; padding: 4px 0; }
+  .table-stack td[data-label]::before { content: attr(data-label); display: block; font-size: 12.5px; font-weight: 700; color: var(--muted); }
+  .table-stack td input[type="text"], .table-stack td input[type="number"] { width: 100% !important; }
+}
+
 @media (max-width: 560px) {
   main { padding-top: 16px; }
   .source { grid-template-columns: 1fr; }

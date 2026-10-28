@@ -30,7 +30,7 @@ function Programs({ plan: p, current }: { plan: Plan; current?: string }) {
     <section class="card stack">
       <h2>Studiengänge</h2>
       <div class="table-wrap">
-        <table class="table">
+        <table class="table table-stack">
           <thead><tr><th>Kürzel</th><th>Name</th><th>Reihenfolge</th><th>aktiv</th><th /></tr></thead>
           <tbody>
             {p.programs.map((x) => <ProgramRow key={x.id} program={x} current={x.id === current} admin={admin} />)}
@@ -55,17 +55,17 @@ function ProgramRow({ program, current, admin }: { program?: Program; current?: 
   });
   return (
     <tr>
-      <td>
+      <td data-label="Kürzel">
         {program && !dirty
           ? <a href={href('/ablage/plan', { sg: program.id })} aria-current={current ? 'true' : undefined}><strong>{program.id}</strong></a>
           : <input type="text" aria-label="Kürzel des Studiengangs" title={CODE_HINT} value={row.id} placeholder="z. B. EIT"
             onInput={(e) => setRow({ ...row, id: e.currentTarget.value.trim() })} />}
       </td>
-      <td><input type="text" aria-label="Name des Studiengangs" value={row.name} placeholder={program ? '' : 'Neuer Studiengang'}
+      <td data-label="Name"><input type="text" aria-label="Name des Studiengangs" value={row.name} placeholder={program ? '' : 'Neuer Studiengang'}
         onInput={(e) => setRow({ ...row, name: e.currentTarget.value })} /></td>
-      <td><input type="number" aria-label="Reihenfolge" style={{ width: '80px' }} value={row.sort_order}
+      <td data-label="Reihenfolge"><input type="number" aria-label="Reihenfolge" style={{ width: '80px' }} value={row.sort_order}
         onInput={(e) => setRow({ ...row, sort_order: Number(e.currentTarget.value) || 0 })} /></td>
-      <td><input type="checkbox" aria-label="aktiv" checked={row.active} onChange={(e) => setRow({ ...row, active: e.currentTarget.checked })} /></td>
+      <td data-label="aktiv"><input type="checkbox" aria-label="aktiv" checked={row.active} onChange={(e) => setRow({ ...row, active: e.currentTarget.checked })} /></td>
       <td>
         <div class="row">
           {dirty && <button class="btn btn-small btn-primary" disabled={!valid || act.busy} onClick={() => void save()}>
@@ -94,7 +94,7 @@ function ProgramModules({ plan: p, programId }: { plan: Plan; programId: string 
     <section class="card stack">
       <h2>Module in {program?.name ?? programId}</h2>
       <div class="table-wrap">
-        <table class="table">
+        <table class="table table-stack">
           <thead><tr><th>Semester</th><th>Kürzel</th><th>Name</th><th>aktiv</th><th /></tr></thead>
           <tbody>
             {rows.map(({ link, module }) => (
@@ -118,12 +118,12 @@ function ModuleRow({ programId, module, semester }: { programId: string; module:
   const valid = CODE_RE.test(row.id) && row.name.trim().length > 0;
   return (
     <tr>
-      <td><input type="number" min={1} max={12} aria-label={`Semester von ${module.id}`} style={{ width: '70px' }} value={sem}
+      <td data-label="Semester"><input type="number" min={1} max={12} aria-label={`Semester von ${module.id}`} style={{ width: '70px' }} value={sem}
         onInput={(e) => setSem(e.currentTarget.value)} /></td>
-      <td><input type="text" aria-label="Kürzel des Moduls" title={CODE_HINT} style={{ width: '110px' }} value={row.id}
+      <td data-label="Kürzel"><input type="text" aria-label="Kürzel des Moduls" title={CODE_HINT} style={{ width: '110px' }} value={row.id}
         onInput={(e) => setRow({ ...row, id: e.currentTarget.value.trim() })} /></td>
-      <td><input type="text" aria-label={`Name von ${module.id}`} value={row.name} onInput={(e) => setRow({ ...row, name: e.currentTarget.value })} /></td>
-      <td><input type="checkbox" aria-label="aktiv" checked={row.active} onChange={(e) => setRow({ ...row, active: e.currentTarget.checked })} /></td>
+      <td data-label="Name"><input type="text" aria-label={`Name von ${module.id}`} value={row.name} onInput={(e) => setRow({ ...row, name: e.currentTarget.value })} /></td>
+      <td data-label="aktiv"><input type="checkbox" aria-label="aktiv" checked={row.active} onChange={(e) => setRow({ ...row, active: e.currentTarget.checked })} /></td>
       <td>
         <div class="row">
           {dirty && <button class="btn btn-small btn-primary" disabled={!valid || act.busy} onClick={() => void act.run(async () => {
