@@ -155,6 +155,10 @@ als Markdown mit YAML-Kopf statt reinem YAML; ausgearbeitet in `ARCHITEKTUR.md`:
 - Die Unterrichtsunterlagen gehören nicht in die Ablage. Sie lassen sich in einer separaten App oder an einem anderen
   Ort der Website einsehen.
 - Am Ende soll die Ablage nicht nur pro Fach, sondern für diverse Studiengänge funktionieren.
+- Die Ablage ist nur für Studierende gedacht, unabhängig von den Studiengangleitungen. Sie soll helfen, Wissen
+  weiterzugeben. Die Dozenten geben oft nur Probeprüfungen ab, und die sind leider oft zu einfach. Darum braucht es
+  alte Prüfungen, um auf dem richtigen Niveau zu lernen. Lieber schwerer lernen, dann wirkt die Prüfung einfacher; sie
+  soll ja nur das Wissen prüfen.
 - Die Vorlagen der Dozenten will Simon stark anpassen.
 - Der Study Hub soll vorerst ein Prototyp sein. Später sollen andere mitmachen, eventuell sogar die Schule, wenn es
   wirklich sinnvoll wird.

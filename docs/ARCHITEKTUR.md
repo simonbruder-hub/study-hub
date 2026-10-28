@@ -197,8 +197,9 @@ gibt.
 
 ## 3. Ablage (Dokumenten-Tresor)
 
-Vorgezogen als Aufgabe 2 (Neuplanung 28.10.2026). Die Ablage nimmt Formelsammlungen, Probeprüfungen und alte
-Prüfungen auf, geordnet nach Studiengang, Semester und Modul, für mehrere Studiengänge. Unterrichtsunterlagen gehören
+Vorgezogen als Aufgabe 2 (Neuplanung 28.10.2026). Die Ablage ist von Studierenden für Studierende. Sie nimmt
+Formelsammlungen, Probeprüfungen und alte Prüfungen auf, geordnet nach Studiengang, Semester und Modul, für mehrere
+Studiengänge. Unterrichtsunterlagen gehören
 nicht hinein. Sehen und Hochladen nur mit Login über die Mail-Adresse für Studierende der Hochschule, ohne
 Freischaltung pro Person. Moderiert werden die Dokumente, vorerst nur durch Simon. Alumni ohne Hochschul-Mail schicken
 ihre Prüfungen an Simon, Simon lädt sie hoch. Formelbuch und Prüfungs-Modus bleiben ohne Login offen.
@@ -206,7 +207,7 @@ ihre Prüfungen an Simon, Simon lädt sie hoch. Formelbuch und Prüfungs-Modus b
 > Der Rest dieses Abschnitts stammt aus Aufgabe 1 und wird in Aufgabe 2 angepasst. Bis dahin gelten die Entscheide in
 > `AUFGABEN.md`, vor allem: keine Freischaltung pro Person (`profiles.status`, Rechte und Login unten ändern sich),
 > Dokumenttypen `formelsammlung`, `probepruefung` und `pruefung`, Studiengänge und Module als eigene Tabellen
-> (Vorschlag), Vermerk für Prüfungen aus dem alten Studienplan.
+> (Vorschlag), Vermerk für Prüfungen aus dem alten Studienplan, Knopf «Melden» zum Entfernen auf Anfrage.
 
 ### Tabellen
 

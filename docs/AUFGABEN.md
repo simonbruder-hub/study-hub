@@ -38,6 +38,9 @@ Startsatz für einen neuen Chat:
   seit mehreren Semestern niemand mehr, und er passt nicht zum neuen Studienplan, darum ein Neustart.
 - 28.10.2026 (Neuplanung): Eine Ablage für mehrere Studiengänge, geordnet nach Studiengang, Semester, Modul und
   Dokument. Ein Modul kann zu mehreren Studiengängen gehören. Unterrichtsunterlagen gehören nicht in die Ablage.
+- 28.10.2026 (Neuplanung): Die Ablage ist von Studierenden für Studierende, unabhängig von der Studiengangleitung. Sie
+  soll helfen, Wissen weiterzugeben: Die Probeprüfungen der Dozenten sind oft zu einfach, mit alten Prüfungen lernt
+  man auf dem richtigen Niveau.
 - 28.10.2026 (Neuplanung): Sehen und Hochladen mit Login über die Mail-Adresse für Studierende der Hochschule, ohne
   Freischaltung pro Person. Moderiert werden die Dokumente: Freigabe vorerst nur durch Simon, eine Moderation pro
   Studiengang ist im Datenmodell vorgesehen.
@@ -50,11 +53,9 @@ Startsatz für einen neuen Chat:
 
 ## Offen
 
-1. Rechtliches vor dem Start der Ablage: mit der Studiengangleitung klären, ob alte Prüfungen und Probeprüfungen in
-   einer geschlossenen Ablage geteilt werden dürfen (Prüfungsreglement, Rechte der Dozenten).
-2. Studiengänge und Module des neuen Studienplans mit Kürzel, Name und Semester (Aufgabe 2).
-3. Domain der Mail-Adressen für Studierende (Aufgabe 2).
-4. Welche Module brauchen welches Simulationswerkzeug? (Aufgabe 5)
+1. Studiengänge und Module des neuen Studienplans mit Kürzel, Name und Semester (Aufgabe 2).
+2. Domain der Mail-Adressen für Studierende (Aufgabe 2).
+3. Welche Module brauchen welches Simulationswerkzeug? (Aufgabe 5)
 
 ## Aufgaben
 
@@ -69,6 +70,9 @@ Startsatz für einen neuen Chat:
    `docs/ARCHITEKTUR.md`, Abschnitt 3; den Abschnitt dabei anpassen.
    Vorschlag, zu Beginn bestätigen: Studiengänge und Module als Tabellen in Supabase, gepflegt in der App, statt in
    `inhalt/module.yaml`. So braucht die Moderation anderer Studiengänge kein Git.
+   Prüfungen sind Werke der Dozenten. Darum die Ablage geschlossen halten (nur mit Login), die Quelle zeigen,
+   Nutzungsregeln in der App und ein Knopf «Melden», damit Simon ein Dokument auf Anfrage sofort entfernen kann.
+   Idee zum Entscheiden: Studierende schätzen ein, ob eine Probeprüfung leichter oder schwerer ist als die echte.
    Mitbringen: Studiengänge und Module des neuen Studienplans (z. B. den offiziellen Modulplan), Mail-Domain der
    Studierenden, zwei bis drei Testdateien, ein neues Supabase-Projekt mit Project URL und Publishable key (den
    geheimen Schlüssel nie in den Chat). In GitHub: Settings, Pages, Source «GitHub Actions».
