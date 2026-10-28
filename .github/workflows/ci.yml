@@ -23,5 +23,27 @@ jobs:
       - run: npm ci
       - name: Inhalte prüfen (Schema, Verweise, Kreise, Analogien, LaTeX, Schreibregeln)
         run: npm run inhalt
-      - name: Tests der Prüfung
+      - name: Unit-Tests (Inhalte, Wasserzeichen, PDF-Prüfung, Texte, Schreibregeln)
         run: npm test
+
+  app:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Typprüfung
+        run: npm run typecheck
+      - name: Datenbank-Tests (Regeln der Ablage, PostgreSQL 16 des Runners)
+        run: npm run db:test
+      - name: Build (PWA und Demo)
+        run: |
+          npm run build
+          npm run build:demo
+      - name: Browser installieren
+        run: npx playwright install --with-deps chromium
+      - name: End-to-End-Tests (Demo der Ablage ohne Server)
+        run: npm run test:e2e
