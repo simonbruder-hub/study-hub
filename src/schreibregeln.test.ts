@@ -6,7 +6,7 @@ import { describe, expect, it } from 'vitest';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const DIRS = ['src', 'web', 'docs', 'supabase', 'scripts', 'tests', '.github', 'inhalt', 'schema'];
-const FILES = ['README.md', 'package.json', 'vite.config.ts', 'playwright.config.ts'];
+const FILES = ['README.md', 'CLAUDE.md', 'package.json', 'vite.config.ts', 'playwright.config.ts', '.gitignore', '.editorconfig'];
 const TEXT = /\.(md|ts|tsx|mjs|js|json|sql|sh|ya?ml|css|html|svg)$/;
 
 function walk(dir: string): string[] {
