@@ -1,5 +1,27 @@
+# Abhängigkeiten und Builds
 node_modules/
 dist/
+coverage/
+*.tsbuildinfo
+
+# Testberichte
 test-results/
 playwright-report/
-.env.local
+
+# Zugangsdaten und lokale Einstellungen (nie ins Repo)
+.env
+.env.*
+!.env.example
+
+# Logs und Systemdateien
+*.log
+.DS_Store
+Thumbs.db
+
+# Editor: nur die gemeinsamen Empfehlungen
+.vscode/*
+!.vscode/extensions.json
+
+# Supabase CLI (Aufgabe 8)
+supabase/.temp/
+supabase/.branches/

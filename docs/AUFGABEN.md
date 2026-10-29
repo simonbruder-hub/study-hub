@@ -1,15 +1,12 @@
 # Aufgaben und Entscheide (Übergabe zwischen Chats)
 
-Startsatz für einen neuen Chat:
-«Lies README.md, docs/BRIEFING.md und docs/AUFGABEN.md und mach Aufgabe N.»
+Neuer Chat: «Mach Aufgabe N aus docs/AUFGABEN.md.» Ein Chat pro Aufgabe. Arbeitsweise, Befehle und Stolpersteine
+stehen in `CLAUDE.md` (lädt automatisch).
 
-## Arbeitsweise
+## Stand
 
-- Deutsch, kein scharfes S, keine Gedankenstriche. Kurz und verständlich erklären (Elektrotechnik-Student,
-  kennt Python und LaTeX, wenig Webentwicklung).
-- Erst gezielte Fragen zu Unklarem, dann ein kurzer Plan, dann umsetzen.
-- Eigener Branch und PR, CI grün machen. Mergen erst nach OK.
-- Ein Chat pro Aufgabe. Sparsam mit Tokens. Am Ende diese Datei nachführen.
+Die Ablage (Aufgabe 2) ist gebaut; PR `simonbruder-hub/study-hub#3` wartet auf das Mergen, die Website ist noch nicht
+eingeschaltet. Als Nächstes die Punkte unter «Offen», dann Aufgabe 3.
 
 ## Entscheide
 
@@ -64,30 +61,26 @@ Startsatz für einen neuen Chat:
   hochgeladen werden.
 - 28.10.2026 (Aufgabe 2): PDF.js 6 statt 5 (Sicherheitslücke in 5.x beim Öffnen präparierter PDFs). Geschützte PDFs
   lehnt das Hochladen ab, weil pdf-lib sie nicht mit dem Wasserzeichen versehen kann.
+- 29.10.2026: Projektpflege: `CLAUDE.md` mit Arbeitsweise, Befehlen und Stolpersteinen, damit ein neuer Chat nicht die
+  ganze Doku lesen muss; kürzerer Startsatz; erledigte Aufgaben nur noch als eine Zeile. Dependabot öffnet einmal im
+  Monat einen PR mit Updates (mergen, wenn die CI grün ist).
 
 ## Offen
 
-1. Supabase einrichten (Simon, `supabase/README.md`): Projekt, Schema, Mail-Domain der Studierenden in
-   `allowed_logins`, Code-Mails, Auth Hook, eigener Mail-Versand (SMTP), GitHub-Variablen `VITE_SUPABASE_URL` und
-   `VITE_SUPABASE_ANON_KEY`, GitHub Pages mit Source «GitHub Actions». Danach mit echten Konten testen: Login,
-   Hochladen, Freigabe, Ansicht, Melden. Die Anbindung an Supabase ist bisher nur gegen die Datenbank-Regeln geprüft.
-2. Studiengänge und Module des neuen Studienplans mit Kürzel, Name und Semester: nach der Einrichtung in der App unter
-   «Studienplan» eintragen.
-3. Welche Module brauchen welches Simulationswerkzeug? (Aufgabe 5)
+1. PR #3 mergen. In GitHub: Settings, Pages, Source «GitHub Actions»; Settings, Branches: Schutz für `main` (mergen nur
+   mit grüner CI).
+2. Supabase einrichten (`supabase/README.md`): Projekt, Schema, Mail-Domain der Studierenden in `allowed_logins`,
+   Code-Mails, Auth Hook, eigener Mail-Versand (SMTP), GitHub-Variablen `VITE_SUPABASE_URL` und
+   `VITE_SUPABASE_ANON_KEY`. Danach mit echten Konten testen: Login, Hochladen, Freigabe, Ansicht, Melden. Die
+   Anbindung an Supabase ist bisher nur gegen die Datenbank-Regeln geprüft.
+3. Studiengänge und Module des neuen Studienplans: nach der Einrichtung in der App unter «Studienplan» eintragen.
+4. Welche Module brauchen welches Simulationswerkzeug? (Aufgabe 5)
 
 ## Aufgaben
 
-1. **Schritt 1 aus dem Briefing** (erledigt: PR `simonbruder-hub/study-hub#1`, siehe `docs/ARCHITEKTUR.md`).
-   Ursprünglicher Auftrag: Datenschema (`FormulaNode`, `DocumentNode`, Relationen), Architektur für Datei-Speicher
-   und Wasserzeichen mit `pdf-lib`, Komponenten-Struktur im Frontend. Noch kein UI-Code. Vorher die offenen Punkte
-   klären.
-2. **Ablage für Formelsammlungen und Prüfungen** (erledigt: PR `simonbruder-hub/study-hub#3`, siehe
-   `docs/ARCHITEKTUR.md`, Abschnitt 3, und `supabase/README.md`). Offen: Einrichtung und Test mit echten Konten (oben
-   unter «Offen»).
-   Ursprünglicher Auftrag (vorgezogen, früher Aufgabe 6 «Dokumenten-Tresor»): Formelsammlungen, Probeprüfungen und
-   alte Prüfungen hochladen, nach Studiengang, Semester und Modul ordnen, freigeben und ansehen. Login mit
-   Hochschul-Mail, Wasserzeichen, Rate-Limit. Dazu das Grundgerüst der App (Vite, Preact, TypeScript, PWA, GitHub
-   Pages), auf dem das Formelbuch später aufbaut.
+1. **Architektur und Datenmodell** (erledigt, PR `simonbruder-hub/study-hub#1`).
+2. **Ablage für Formelsammlungen und Prüfungen** (erledigt, PR `simonbruder-hub/study-hub#3`; Doku in
+   `docs/ARCHITEKTUR.md`, Abschnitt 3, und `supabase/README.md`).
 3. **Formelbuch: Grundgerüst und erste Themen** (früher Aufgabe 2): einige Themen als Formel-Knoten (Vorlagen der
    Dozenten als Grundlage, stark angepasst, eigener Standard), Explorer und Prüfungs-Formelsammlung zum Drucken.
    Danach Experten zeigen. Aufbau nach `docs/ARCHITEKTUR.md`, Abschnitt 4. Die Daten liefert
@@ -106,26 +99,23 @@ Startsatz für einen neuen Chat:
    (Lernlabor im Browser, PLECS oder Simulink als Datei mit Bild und Ergebnis).
 6. **Lernhilfen:** KI-Prompt-Knopf, Regler mit Graphen, Videos und Links pro Knoten.
 
+7. **Datenschutz und Impressum:** Seite in der App mit Datenschutzerklärung (was die Ablage speichert: Mail-Adresse,
+   Uploads, Abrufe, Einschätzungen, Meldungen; wie lange; Rechte; Kontakt) und Impressum, verlinkt im Fuss und beim
+   Login. Vor der Einladung weiterer Studierender. Mitbringen: Kontaktadresse für die Website.
+8. **Datenbank mit der Supabase CLI:** `supabase/schema.sql` in Migrationen überführen, TypeScript-Typen erzeugen
+   (`supabase gen types`) und in `src/vault/supabaseApi.ts` nutzen, damit Tippfehler bei Tabellen und Spalten beim
+   Build auffallen. Die Tests der Regeln bleiben.
+9. **Code-Stil:** ESLint und Prettier, Prüfung in der CI. Das einmalige Formatieren des ganzen Codes als eigener PR,
+   damit der Diff nur Formatierung zeigt.
+10. **Backups der Ablage:** regelmässige Sicherung der Datenbank und der Originale im Speicher `eingang`, z. B. mit einer
+    GitHub Action. Vorher klären, wo die Sicherung liegen darf (nicht im öffentlichen Repo).
+11. **Barrierefreiheit:** axe in den End-to-End-Tests, gefundene Probleme beheben.
+
 ## Technische Hinweise
 
-- Vorbild ist das Repo `simonbruder-hub/apps` (gleicher Stack, gleiche Arbeitsweise, dort `docs/AUFGABEN.md`).
-- Inhalte: `npm ci`, `npm run inhalt` (Prüfung), `npm test` (Tests der Prüfung). `.npmrc` mit
-  `legacy-peer-deps=true` wie bei Taktwerk, sonst bricht npm 10 beim Auflösen von Vitest 5 ab.
+Die meisten stehen in `CLAUDE.md`. Hier nur, was für spätere Aufgaben zählt:
+
+- Vorbild ist das Repo `simonbruder-hub/apps` (gleicher Stack, gleiche Arbeitsweise).
 - KaTeX 0.18, weil 0.16 eine Sicherheitswarnung hat. Das Lernlabor nutzt noch 0.16, beim Umzug beachten.
-- Playwright in der Cloud: Chromium unter `/opt/pw-browsers/chromium`.
-- PRs in der Cloud über `gh api repos/simonbruder-hub/study-hub/pulls` (`gh pr create` geht nicht).
-- Repo-Einstellungen (umbenennen, Pages einschalten, Sichtbarkeit) kann Claude nicht ändern, das macht Simon in GitHub.
-  Für GitHub Pages: Settings, Pages, Source «GitHub Actions».
-- App: `npm run dev` (http://localhost:5175), `npm run typecheck`, `npm test` (Unit-Tests, dazu die Schreibregeln
-  für das ganze Repo), `npm run db:test` (Regeln der Ablage, braucht PostgreSQL 16), `npm run build`.
-- Ablage ohne Supabase: `npm run dev:demo` (Code 123456, `admin@students.example.ch` ist Admin). End-to-End-Tests:
-  `npm run build && npm run build:demo && npm run test:e2e` (Demo-Build und Produktions-Build ohne Supabase-Variablen),
-  in der Cloud mit `PW_CHROMIUM=/opt/pw-browsers/chromium`.
-- `pkill` immer in einem eigenen Bash-Aufruf und mit Klammer im Muster (`pkill -f "vite previe[w]"`), sonst trifft
-  der Befehl die eigene Shell.
-- Der Chromium in der Cloud verwirft Dateinamen mit Umlauten beim Herunterladen; die App schreibt Umlaute im
-  Dateinamen darum aus.
 - pdf-lib ist nach ES5 übersetzt: `instanceof EncryptedPDFError` greift nicht, geschützte PDFs erkennt
   `src/vault/pdfcheck.ts` darum auch am Text der Meldung.
-- Ein heruntergeladenes Programm (z. B. PostgREST für einen API-Test) darf Claude in der Cloud nicht ausführen; die
-  Anbindung an Supabase lässt sich darum erst mit dem echten Projekt testen.
