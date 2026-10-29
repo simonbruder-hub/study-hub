@@ -12,6 +12,7 @@ Website: <https://simonbruder-hub.github.io/study-hub/>, sobald GitHub Pages ein
 
 | Datei | Inhalt |
 |---|---|
+| [`CLAUDE.md`](CLAUDE.md) | Kurzanleitung für Claude: Arbeitsweise, Befehle, Stolpersteine |
 | [`docs/BRIEFING.md`](docs/BRIEFING.md) | Master-Briefing, Ergänzungen und Vorschläge |
 | [`docs/AUFGABEN.md`](docs/AUFGABEN.md) | Arbeitsweise, Entscheide, offene Fragen, Aufgaben |
 | [`docs/ARCHITEKTUR.md`](docs/ARCHITEKTUR.md) | Datenmodell, Relationen, Ablage mit Wasserzeichen, Aufbau des Frontends |
@@ -22,7 +23,7 @@ Website: <https://simonbruder-hub.github.io/study-hub/>, sobald GitHub Pages ein
 | [`scripts/inhalt.mjs`](scripts/inhalt.mjs) | Prüfung der Inhalte, erzeugt die Daten für das Formelbuch |
 | [`tests/e2e/`](tests/e2e) | Abläufe der Ablage im Browser (Playwright, Demo ohne Server) |
 
-Startsatz für einen neuen Chat: «Lies README.md, docs/BRIEFING.md und docs/AUFGABEN.md und mach Aufgabe N.»
+Neuer Chat mit Claude: «Mach Aufgabe N aus docs/AUFGABEN.md.» Claude liest dazu `CLAUDE.md` automatisch.
 
 ## Entwickeln
 
