@@ -5,8 +5,8 @@ stehen in `CLAUDE.md` (lädt automatisch).
 
 ## Stand
 
-Die Ablage (Aufgabe 2) ist gebaut; PR `simonbruder-hub/study-hub#3` wartet auf das Mergen, die Website ist noch nicht
-eingeschaltet. Als Nächstes die Punkte unter «Offen», dann Aufgabe 3.
+Die Ablage (Aufgabe 2) ist gebaut und gemergt (PR `simonbruder-hub/study-hub#3`). Die Website ist noch nicht
+eingeschaltet, Supabase noch nicht eingerichtet. Als Nächstes die Punkte unter «Offen», dann Aufgabe 3.
 
 ## Entscheide
 
@@ -67,8 +67,9 @@ eingeschaltet. Als Nächstes die Punkte unter «Offen», dann Aufgabe 3.
 
 ## Offen
 
-1. PR #3 mergen. In GitHub: Settings, Pages, Source «GitHub Actions»; Settings, Branches: Schutz für `main` (mergen nur
-   mit grüner CI).
+1. In GitHub: Settings, Pages, Source «GitHub Actions», dann unter Actions den Workflow «GitHub Pages» neu starten (der
+   erste Lauf nach dem Merge scheiterte, weil Pages noch aus war). Settings, Branches: Schutz für `main` (mergen nur mit
+   grüner CI).
 2. Supabase einrichten (`supabase/README.md`): Projekt, Schema, Mail-Domain der Studierenden in `allowed_logins`,
    Code-Mails, Auth Hook, eigener Mail-Versand (SMTP), GitHub-Variablen `VITE_SUPABASE_URL` und
    `VITE_SUPABASE_ANON_KEY`. Danach mit echten Konten testen: Login, Hochladen, Freigabe, Ansicht, Melden. Die
