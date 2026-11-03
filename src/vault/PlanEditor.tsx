@@ -1,5 +1,6 @@
 /** Studienplan pflegen: Studiengänge, Module mit Semester, zugelassene Mail-Domains (Admin) */
-import { useState } from 'preact/hooks';
+import { useEffect, useState } from 'preact/hooks';
+import { inhalt, loadInhalt } from '../data/content';
 import { href, route } from '../router';
 import { CODE_RE, semesterValue } from './logic';
 import { api, me, plan, refreshPlan } from './state';
@@ -17,10 +18,28 @@ export function PlanEditor() {
       <h1>Studienplan</h1>
       <p class="muted">Studiengänge, Module und Semester. Ein Modul kann zu mehreren Studiengängen gehören, jeweils mit eigenem Semester.
         Leeres Semester heisst frei wählbar.</p>
+      <BookModules plan={p} />
       <Programs plan={p} current={programId} />
       {programId && <ProgramModules key={programId} plan={p} programId={programId} />}
       {me.value?.admin && <Logins />}
     </section>
+  );
+}
+
+/** Abgleich mit dem Formelbuch: Kürzel aus inhalt/module.yaml, die im Studienplan fehlen */
+function BookModules({ plan: p }: { plan: Plan }) {
+  useEffect(loadInhalt, []);
+  const d = inhalt.value;
+  if (!d) return null;
+  const known = new Set(p.modules.map((m) => m.id.toLowerCase()));
+  const missing = Object.keys(d.modules).filter((id) => !known.has(id.toLowerCase()));
+  if (!missing.length) return null;
+  return (
+    <p class="note note-warn">
+      Das Formelbuch hat Formeln für {missing.join(', ')}, der Studienplan kennt diese Kürzel nicht. Module hier mit
+      demselben Kürzel anlegen oder die Kürzel in <code>inhalt/module.yaml</code> anpassen, sonst fehlt die Verbindung
+      zwischen Ablage und Formelsammlung.
+    </p>
   );
 }
 

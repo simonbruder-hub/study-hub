@@ -1,0 +1,34 @@
+/* Formelsammlung: am Bildschirm als Raster, gedruckt auf A4 in Spalten, schwarz auf weiss */
+.exam-tools { display: grid; gap: 10px; }
+.exam-head h1 { margin: 0; }
+.exam-topic h2 { margin: 6px 0 8px; font-size: 19px; }
+.exam-grid { display: grid; gap: 10px; grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr)); }
+.exam.cols-2 { --cols: 2; }
+.exam.cols-3 { --cols: 3; }
+.exam-card { min-width: 0; padding: 8px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); break-inside: avoid; }
+.exam-card h3 { margin: 0 0 2px; font-size: 15px; }
+.exam-card h3 a { color: inherit; text-decoration: none; }
+.exam-card .katex-display { margin: 4px 0; }
+.exam-vars { display: flex; flex-wrap: wrap; gap: 0 12px; margin: 4px 0 0; padding: 0; list-style: none; font-size: 13px; color: var(--ink-2); }
+.picker { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); margin: 0; padding: 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+.picker legend { font-weight: 700; padding: 0 6px; }
+.picker-topic { display: grid; gap: 4px; align-content: start; }
+@media (max-width: 720px) { .exam-grid { grid-template-columns: minmax(0, 1fr); } }
+
+@media print {
+  @page { size: A4; margin: 10mm; }
+  :root, :root:not([data-theme="light"]), :root[data-theme] {
+    --bg: #fff; --surface: #fff; --surface-2: #fff; --ink: #000; --ink-2: #222; --muted: #444; --line: #999; --line-strong: #666; --accent: #000;
+  }
+  body { background: #fff; color: #000; }
+  .top, .site-foot, .no-print { display: none !important; }
+  main { max-width: none; padding: 0; }
+  .exam { gap: 2mm; font-size: 9pt; }
+  .exam-head h1 { font-size: 14pt; }
+  .exam-grid { display: block; column-count: var(--cols, 3); column-gap: 4mm; }
+  .exam-topic h2 { margin: 1mm 0 1.5mm; font-size: 11pt; break-after: avoid; }
+  .exam-card { margin: 0 0 2mm; padding: 1.2mm 2mm; border: 0.25mm solid #999; border-radius: 0; box-shadow: none; }
+  .exam-card h3 { font-size: 9pt; }
+  .exam-card .katex-display { margin: 1mm 0; overflow: visible; }
+  .exam-vars { font-size: 7.5pt; color: #222; }
+}

@@ -1,6 +1,12 @@
 # yaml-language-server: $schema=../schema/module.schema.json
-# Module (Fächer) mit Semester und Simulationswerkzeugen.
-# Beispiel. Die echten Module kommen mit der Ablage (Aufgabe 2), die Werkzeuge pro Modul mit Aufgabe 5.
-et-grundlagen:
-  title: Grundlagen der Elektrotechnik
+# Module mit Formeln im Formelbuch. Das Kürzel ist dasselbe wie in der Ablage (Studienplan in Supabase), so
+# verlinken sich Formelsammlung und Ablage. Name und Semester pflegt die Ablage, der Name hier dient dem
+# Formelbuch ohne Login. Vorerst die Kürzel der Demo: an die echten anpassen, sobald der Studienplan steht
+# (unter «Studienplan» zeigt die App Kürzel, die hier stehen, aber dort fehlen). Werkzeuge: Aufgabe 5.
+ETG1:
+  title: Grundlagen der Elektrotechnik 1
   tools: [lernlabor, python]
+ETG2:
+  title: Grundlagen der Elektrotechnik 2
+LEL:
+  title: Effiziente Leistungselektronik

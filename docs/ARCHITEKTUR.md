@@ -2,7 +2,8 @@
 
 Ergebnis von Aufgabe 1 (28.10.2026): Datenmodell, Relationen, Speicher mit Wasserzeichen und Aufbau des Frontends.
 Nach der Neuplanung vom 28.10.2026 kam die Ablage zuerst; Abschnitt 3 beschreibt sie so, wie sie in Aufgabe 2
-umgesetzt ist. Was gilt: zuerst die Entscheide in `AUFGABEN.md`, dann dieses Dokument, dann `BRIEFING.md`.
+umgesetzt ist, die Abschnitte 1 und 4 das Formelbuch aus Aufgabe 3. Wie man Knoten schreibt: `INHALTE.md`. Was
+gilt: zuerst die Entscheide in `AUFGABEN.md`, dann dieses Dokument, dann `BRIEFING.md`.
 
 ## Überblick
 
@@ -41,7 +42,8 @@ inhalt/
     waermetransport/
       waermewiderstand.md      eigene Bilder und Modelle liegen neben dem Knoten
 schema/                JSON-Schemas zu allen Dateien (für die Prüfung und den Editor)
-scripts/inhalt.mjs     prüft alles und erzeugt inhalt.json
+scripts/inhalt.mjs     prüft alles und erzeugt die Daten für die App (inhalt.json)
+scripts/myst.mjs       Text der Knoten (Markdown mit MyST-Teilmenge) und Formeln zu HTML
 ```
 
 Tipp: VS Code mit der Erweiterung «YAML» (Red Hat) schlägt in den `.yaml`-Dateien die Felder vor und markiert
@@ -64,12 +66,15 @@ variables:
   - { symbol: R, quantity: widerstand }
   - { symbol: I, quantity: strom }
   - { symbol: G, quantity: leitwert }
-modules: [et-grundlagen]
+modules: [ETG1]
 sources:
   - { title: 'Lernlabor, Theorie Gleichstrom', url: 'https://simonbruder-hub.github.io/apps/lernlabor/app/' }
 ---
-Bei einem linearen Widerstand ist der Strom proportional zur Spannung. Die Kennlinie $I(U)$ ist eine
-Gerade durch den Ursprung mit der Steigung $G = 1/R$.
+An einem linearen Widerstand ist der Strom proportional zur Spannung. Der Faktor dazwischen ist der
+Widerstand $R$, sein Kehrwert heisst Leitwert $G$.
+
+## Gültigkeit
+...
 ```
 
 | Feld | Pflicht | Inhalt |
@@ -81,11 +86,11 @@ Gerade durch den Ursprung mit der Steigung $G = 1/R$.
 | `forms` | | weitere Formen (umgestellt, Spezialfälle), kommen mit in die Formelsammlung |
 | `level` | ja | 1 Grundlagen, 2 Vertiefung, 3 Spezialisierung |
 | `variables` | ja | pro Zeichen: `symbol` (LaTeX), `quantity` (ID aus `groessen.yaml`), optional `meaning` |
-| `modules` | | IDs aus `module.yaml` |
+| `modules` | | Kürzel aus `module.yaml`, dieselben wie in der Ablage (z. B. `ETG1`) |
 | `prerequisites` | | IDs der Knoten, die man vorher kennen muss |
 | `learning_resources` | | `simulations`, `videos` und `links` (je `title`, `url`), `prompt` (eigene KI-Vorlage) |
 | `sources` | | `title`, `author`, `year`, `url`; Pflicht, wenn der Inhalt auf einer Vorlage beruht |
-| Text | | unter dem Kopf: Erklärung als Markdown mit `$...$` und `$$...$$`; nicht in der Formelsammlung |
+| Text | ja | unter dem Kopf: Markdown mit einer Teilmenge von MyST, gegliedert nach dem eigenen Standard (`INHALTE.md`); nicht in der Formelsammlung |
 
 Simulationen (`learning_resources.simulations`), das genaue Format pro Werkzeug folgt in Aufgabe 5:
 
@@ -121,8 +126,8 @@ elektrotechnik:
 # groessen.yaml: jede Grösse einmal; Zeichen und Einheit in LaTeX
 waermewiderstand: { name: Wärmewiderstand, symbol: 'R_{th}', unit: 'K/W' }
 
-# module.yaml: Module mit Werkzeugen (vorerst ein Beispiel)
-et-grundlagen: { title: Grundlagen der Elektrotechnik, tools: [lernlabor, python] }
+# module.yaml: Module mit Formeln, Kürzel wie in der Ablage; Werkzeuge folgen mit Aufgabe 5
+ETG1: { title: Grundlagen der Elektrotechnik 1, tools: [lernlabor, python] }
 
 # analogien.yaml: Knoten mit gleicher Mathematik, Grössen pro Zeile in der Reihenfolge von nodes
 ohm-thermisch:
@@ -134,8 +139,11 @@ ohm-thermisch:
     - [widerstand, waermewiderstand]
 ```
 
-Module (Fächer) stehen seit Aufgabe 2 in Supabase und werden in der App gepflegt (Abschnitt 3). `module.yaml` bleibt
-vorerst für das Formelbuch, mit denselben Kürzeln; wie die Prüfung die Liste aus Supabase übernimmt, klärt Aufgabe 3.
+Module (Fächer) stehen seit Aufgabe 2 in Supabase und werden in der App gepflegt (Abschnitt 3). `module.yaml` enthält
+nur die Module mit Formeln, mit denselben Kürzeln wie die Ablage; Name und Semester pflegt die Ablage. Abgeglichen wird
+in der App, denn die CI hat keinen Zugang zur Datenbank: Beim Modul in der Ablage steht der Link zur Formelsammlung,
+und unter «Studienplan» meldet die App Kürzel aus `module.yaml`, die im Studienplan fehlen. Gross und klein zählen
+dabei nicht, wie in der Ablage.
 
 ### Regeln
 
@@ -143,14 +151,17 @@ Die Prüfung `npm run inhalt` läuft lokal und in der CI. Sie bricht ab bei:
 
 1. Schema: Pflichtfeld fehlt, Wert nicht erlaubt, unbekanntes Feld (so fallen Tippfehler wie `prerequisite` auf).
 2. Ablage: Knoten nicht unter `knoten/<thema>/<id>.md`, ID ungültig oder doppelt, Thema fehlt in `themen.yaml`.
-3. Verweise: Modul, Voraussetzung, Grösse, Knoten einer Analogie oder Datei einer Simulation gibt es nicht.
+3. Verweise: Modul, Voraussetzung, Grösse, Knoten einer Analogie, Knoten in `{k}` oder Datei einer Simulation gibt
+   es nicht.
 4. Kreis in den Voraussetzungen (A braucht B, B braucht A).
 5. Analogie: Zeile ohne eine Grösse pro Knoten, oder der Knoten hat keine Variable dieser Grösse.
 6. LaTeX, das mit KaTeX nicht rendert: Hauptformel, Formen, Zeichen, Einheiten und Formeln im Text.
-7. Schreibregeln: scharfes S oder Gedankenstrich.
+7. Text: Gliederung nicht nach dem Standard, unbekannte Direktive oder Rolle, Direktive ohne Abschluss, Link ohne
+   `https://`, Bild, Verweis auf eine fehlende Formelmarke, einzelnes `$`.
+8. Schreibregeln: scharfes S oder Gedankenstrich.
 
-Warnungen lassen die CI grün: Voraussetzung mit höherer Stufe als der Knoten, unbenutzte Grösse, Hinweise von KaTeX
-(z. B. ein Umlaut direkt in einer Formel).
+Warnungen lassen die CI grün: Voraussetzung mit höherer Stufe als der Knoten, unbenutzte Grösse, unbekannte Option
+einer Direktive, Hinweise von KaTeX (z. B. ein Umlaut direkt in einer Formel).
 
 IDs bleiben stabil, denn Links, Lesezeichen und Dokumente im Tresor hängen daran. Muss eine ID doch ändern, zeigt
 die Prüfung alle Stellen im Repo, die anzupassen sind.
@@ -166,11 +177,14 @@ quantities    wie groessen.yaml
 modules       wie module.yaml
 analogies     wie analogien.yaml
 nodes         alle Knoten, sortiert nach Thema, Stufe und Titel, mit allen Feldern und zusätzlich:
-              id, file, topic, discipline, required_by (wer baut darauf auf), analogies (IDs)
+              id, file, topic, discipline, required_by (wer baut darauf auf), analogies (IDs),
+              latex_html, forms_html, variables[].symbol_html, html (der Text)
 ```
 
-Fehlende Listen sind leer statt undefiniert, die App muss das nicht prüfen. In Aufgabe 3 wird der Text dabei zu HTML
-(Markdown und KaTeX schon beim Build), die App zeigt ihn nur noch an.
+Grössen bekommen `symbol_html` und `unit_html`. Fehlende Listen sind leer statt undefiniert, die App muss das nicht
+prüfen. Text und Formeln sind schon HTML (markdown-it und KaTeX beim Build), die App zeigt sie nur an und braucht von
+KaTeX nur CSS und Schriften. Die App holt die Daten nicht aus der Datei, sondern über das Plugin in `vite.config.ts`
+(Modul `virtual:inhalt`); die Datei dient zum Anschauen.
 
 ## 2. Relationen
 
@@ -204,7 +218,7 @@ erDiagram
 Die Enden zeigen die Anzahl: `||` genau eins, `o{` null bis viele, `|{` eins bis viele. Studiengang, Modul, Dokument,
 Profil, Meldung, Einschätzung, Zugriff und Moderation sind Tabellen in Supabase, alles andere sind Dateien im Repo.
 Über diese Grenze laufen die Verbindungen über Kürzel und IDs als Text, ohne Fremdschlüssel: Knoten nennen Module
-(`modules`), Dokumente nennen Knoten (`linked_formula_ids`, für Aufgabe 3 vorbereitet, noch ohne Oberfläche).
+(`modules`), Dokumente nennen Knoten (`linked_formula_ids`, vorbereitet, noch ohne Oberfläche: Aufgabe 13).
 
 ## 3. Ablage
 
@@ -251,7 +265,7 @@ eine Moderation pro Studiengang ist vorgesehen. Formelbuch und Prüfungs-Modus b
 | `provenance`, `alumni_year` | `studierende` oder `alumni` mit Abschlussjahr |
 | `old_plan_module` | Vermerk «alter Studienplan, Modul X» für Prüfungen aus dem alten Plan |
 | `description` | Bemerkung, z. B. «nur Teil A» |
-| `linked_formula_ids` | Knoten des Formelbuchs, die man zum Lösen braucht (Aufgabe 3) |
+| `linked_formula_ids` | Knoten des Formelbuchs, die man zum Lösen braucht (Oberfläche: Aufgabe 13) |
 | `page_count`, `size_bytes`, `sha256` | aus dem PDF; dieselbe Datei nur einmal, nach dem Entfernen auch nicht wieder |
 | `status` | `pending`, `approved`, `rejected`, `removed` |
 | `uploaded_by`, `original_path` | Absender und Original; sieht nur die Moderation |
@@ -394,26 +408,34 @@ src/
     Moderation.tsx, PlanEditor.tsx
     PdfViewer.tsx                PDF.js, lädt erst beim Ansehen
     pdfcheck.ts, watermark.ts    pdf-lib: Prüfung beim Hochladen, Wasserzeichen bei der Freigabe
-  data/                          Aufgabe 3: types.ts, content.ts (inhalt.json als Signal), graph.ts, search.ts
-  ui/                            Aufgabe 3: Tex.tsx (KaTeX), Formula.tsx, VariableTable.tsx, LevelBadge.tsx, NodeLink.tsx, NodeCard.tsx
-  views/explorer/, node/, exam/  Aufgabe 3: Explorer, Knotenseite, Prüfungs-Formelsammlung mit print.css
+  data/                          Formelbuch: types.ts, content.ts (Laden als Signal, Suche, Module, eigene Auswahl),
+                                 inhalt.ts (eigenes Paket: Daten und CSS von KaTeX)
+  ui/formel.tsx                  Tex (HTML von KaTeX), LevelBadge, NodeLink, NodeList, NodeCard, VariableTable
+  views/explorer/Explorer.tsx    Explorer: Suche, Stufe, Themen, Karten; Links zu den Formelsammlungen
+  views/node/NodePage.tsx        Knotenseite: Formel, Variablen, Text, Verbindungen, Analogien, Quellen
+  views/exam/Exam.tsx, print.css Formelsammlung: Modul oder eigene Auswahl, 2 oder 3 Spalten, Druck auf A4
   learn/                         Aufgabe 6: PromptButton.tsx, prompt.ts, Videos.tsx, SliderGraph.tsx
   sim/                           Aufgaben 4 und 5: Simulation.tsx wählt nach tool; Rechenkern und Baukasten aus dem Lernlabor
-  styles/app.css
+  styles/app.css, formelbuch.css
 supabase/                        schema.sql, README.md, test/
 tests/e2e/                       Abläufe der Ablage im Demo-Build (Playwright)
 ```
 
 ### Entscheide im Frontend
 
-- Daten: `inhalt.json` entsteht beim Build und ist Teil der App. Die PWA speichert sie, darum läuft das Formelbuch
-  offline. Wird die Datei zu gross, kommt sie pro Fachgebiet in eine eigene Datei.
+- Daten: Das Plugin in `vite.config.ts` prüft `inhalt/` beim Build und liefert die Daten als eigenes Paket
+  (`assets/inhalt-*.js` mit der CSS von KaTeX); Fehler im Inhalt brechen den Build ab. Die PWA speichert das Paket
+  und die Schriften von KaTeX vorab, darum läuft das Formelbuch offline. Mit 24 Knoten rund 1 MB, gepackt 60 KB;
+  ab etwa 100 Knoten den Text pro Thema in eigene Pakete teilen.
+- Text der Knoten: Hinweise als `aside`, Lösungen als `details`, Tabs mit Radio-Knöpfen. So funktioniert das HTML
+  aus dem Build ohne Code in der App.
 - Explorer: zuerst ein Baum statt eines grossen Netzgraphen, das ist lesbarer und braucht keine schwere Bibliothek.
   Das Netz zeigt die Knotenseite: Voraussetzungen, «baut darauf auf» und Analogien. Später vielleicht eine kleine
   Ansicht der direkten Nachbarn als SVG.
-- Prüfungs-Modus: Auswahl per Modul oder eigener Liste. Druck mit CSS `@media print` im Raster mit 2 bis 3 Spalten,
-  nur Titel, Hauptformel, Formen und Variablen, ohne Text und Lernhilfen. Später ein Export als `.tex` für Overleaf
-  aus denselben Daten.
+- Prüfungs-Modus: Auswahl per Modul (`?modul=`, Gross und klein egal) oder eigener Liste (`?k=`, im Browser
+  gespeichert und als Adresse teilbar). Druck mit CSS `@media print` in 2 oder 3 Spalten, nur Titel, Hauptformel,
+  Formen und Variablen (abschaltbar), ohne Text und Lernhilfen. Ein Test im Browser prüft, dass jede Formel in drei
+  Spalten passt. Später ein Export als `.tex` für Overleaf aus denselben Daten.
 - Simulation: eine Komponente wählt nach `tool`. Lernlabor eingebettet, Python mit Pyodide (lädt erst bei Bedarf),
   Falstad als `iframe`, PLECS und Simulink als Bild der Schaltung mit Parametern, Ergebnis und Modell zum
   Herunterladen.
@@ -427,7 +449,8 @@ tests/e2e/                       Abläufe der Ablage im Demo-Build (Playwright)
 
 | Aufgabe | aus diesem Entwurf |
 |---|---|
-| 3 | Formelbuch: Text beim Build als HTML, erste Themen nach den Vorlagen, Explorer, Knotenseite, Prüfungs-Modus; Module aus Supabase mit `inhalt/module.yaml` abgleichen |
 | 4 | Lernlabor nach `src/sim/`, Theorie in Knoten, Beispiele über `tool: lernlabor` an die Knoten; KaTeX dabei von 0.16 auf 0.18 |
 | 5 | Werkzeuge pro Modul, Format pro Werkzeug genauer, zwei Beispiele |
 | 6 | Prompt-Knopf, Regler mit Graph, Videos und Links |
+| 12 | Schaltbilder: eigene SVG neben dem Knoten, `{figure}` in der MyST-Teilmenge |
+| 13 | Dokumente der Ablage mit Knoten verknüpfen (`linked_formula_ids`): Auswahl beim Hochladen, Links in beide Richtungen |

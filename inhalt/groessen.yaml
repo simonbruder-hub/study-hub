@@ -13,3 +13,19 @@ waermekapazitaet: { name: Wärmekapazität, symbol: 'C_{th}', unit: 'J/K' }
 waermeleitfaehigkeit: { name: Wärmeleitfähigkeit, symbol: '\lambda', unit: 'W/(m\,K)' }
 laenge: { name: Länge, symbol: l, unit: m }
 flaeche: { name: Fläche, symbol: A, unit: 'm^2' }
+leistung: { name: Leistung, symbol: P, unit: W }
+energie: { name: Energie, symbol: W, unit: J }
+ladung: { name: Elektrische Ladung, symbol: Q, unit: C }
+spezifischer-widerstand: { name: Spezifischer Widerstand, symbol: '\rho', unit: '\Omega\,m' }
+leitfaehigkeit: { name: Elektrische Leitfähigkeit, symbol: '\kappa', unit: 'S/m' }
+temperaturkoeffizient: { name: Temperaturkoeffizient, symbol: '\alpha', unit: '1/K' }
+wirkungsgrad: { name: Wirkungsgrad, symbol: '\eta', unit: '1' }
+induktivitaet: { name: Induktivität, symbol: L, unit: H }
+frequenz: { name: Frequenz, symbol: f, unit: Hz }
+kreisfrequenz: { name: Kreisfrequenz, symbol: '\omega', unit: '1/s' }
+phasenwinkel: { name: Phasenwinkel, symbol: '\varphi', unit: rad }
+impedanz: { name: Impedanz, symbol: '\underline{Z}', unit: '\Omega' }
+blindwiderstand: { name: Blindwiderstand, symbol: X, unit: '\Omega' }
+blindleistung: { name: Blindleistung, symbol: Q, unit: var }
+scheinleistung: { name: Scheinleistung, symbol: S, unit: VA }
+leistungsfaktor: { name: Leistungsfaktor, symbol: '\lambda', unit: '1' }

@@ -1,5 +1,6 @@
 /** Stöbern: Studiengang, Semester, Modul, Dokumente */
-import { useState } from 'preact/hooks';
+import { useEffect, useState } from 'preact/hooks';
+import { findModule, inhalt, loadInhalt } from '../data/content';
 import { href, route } from '../router';
 import { SOLUTION_KIND_LABEL, TYPE_LABEL, TYPE_PLURAL, provenanceLabel, termLabel } from './labels';
 import { byDate, ratingText } from './logic';
@@ -85,6 +86,8 @@ function ModuleView({ plan: p, moduleId, programId, docs, error }:
   { plan: Plan; moduleId: string; programId: string; docs?: DocMeta[]; error: unknown }) {
   const module = p.modules.find((m) => m.id === moduleId);
   const ratings = useLoad(() => api.value!.ratings(moduleId), [moduleId]);
+  useEffect(loadInhalt, []);
+  const book = inhalt.value && findModule(inhalt.value, moduleId); // gleiches Kürzel im Formelbuch
   const mine = (docs ?? []).filter((d) => d.module_id === moduleId).sort(byDate);
   const where = p.links.filter((l) => l.module_id === moduleId)
     .map((l) => `${l.program_id}${l.semester ? `, ${l.semester}. Semester` : ''}`).join(' · ');
@@ -95,6 +98,7 @@ function ModuleView({ plan: p, moduleId, programId, docs, error }:
         <div>
           <h1>{moduleId} {module?.name}</h1>
           {where && <p class="muted small">{where}</p>}
+          {book && <p class="small"><a href={href('/pruefung', { modul: book })}>Formelsammlung im Formelbuch</a></p>}
         </div>
         <a class="btn btn-primary" href={href('/ablage/neu', { sg: programId, m: moduleId })}>Hochladen in dieses Modul</a>
       </div>
