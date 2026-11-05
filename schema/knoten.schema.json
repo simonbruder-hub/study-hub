@@ -26,8 +26,10 @@
       "items": { "$ref": "#/$defs/variable" }
     },
     "modules": {
-      "$ref": "gemeinsam.schema.json#/$defs/ids",
-      "description": "IDs aus inhalt/module.yaml"
+      "type": "array",
+      "items": { "$ref": "gemeinsam.schema.json#/$defs/modul" },
+      "uniqueItems": true,
+      "description": "Kürzel aus inhalt/module.yaml (wie in der Ablage)"
     },
     "prerequisites": {
       "$ref": "gemeinsam.schema.json#/$defs/ids",

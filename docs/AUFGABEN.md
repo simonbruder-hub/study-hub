@@ -5,8 +5,9 @@ stehen in `CLAUDE.md` (lädt automatisch).
 
 ## Stand
 
-Die Ablage (Aufgabe 2) ist gebaut und gemergt (PR `simonbruder-hub/study-hub#3`). Die Website ist noch nicht
-eingeschaltet, Supabase noch nicht eingerichtet. Als Nächstes die Punkte unter «Offen», dann Aufgabe 3.
+Die Ablage (Aufgabe 2) und das Formelbuch (Aufgabe 3) sind gebaut. Das Formelbuch hat 24 Knoten zu Gleichstrom,
+Schaltvorgängen, Wechselstrom und Wärmelehre, dazu Explorer, Knotenseiten und Formelsammlungen zum Drucken. Die
+Website ist noch nicht eingeschaltet, Supabase noch nicht eingerichtet. Als Nächstes die Punkte unter «Offen».
 
 ## Entscheide
 
@@ -64,6 +65,17 @@ eingeschaltet, Supabase noch nicht eingerichtet. Als Nächstes die Punkte unter 
 - 29.10.2026: Projektpflege: `CLAUDE.md` mit Arbeitsweise, Befehlen und Stolpersteinen, damit ein neuer Chat nicht die
   ganze Doku lesen muss; kürzerer Startsatz; erledigte Aufgaben nur noch als eine Zeile. Dependabot öffnet einmal im
   Monat einen PR mit Updates (mergen, wenn die CI grün ist).
+- 03.11.2026 (Aufgabe 3): Text der Knoten als Teilmenge von MyST wie in Jupyter Book: Hinweise, aufklappbare
+  Lösungen, Tabs, nummerierte Formeln und Links auf Knoten. Blöcke aus Vorlagen lassen sich übernehmen, was nicht
+  unterstützt ist, stoppt die CI. Übersicht und Vorlage in `docs/INHALTE.md`.
+- 03.11.2026 (Aufgabe 3): Eigener Standard für den Text, kompakt: Einleitung, Herleitung (optional), Gültigkeit,
+  Beispiel mit aufklappbarer Lösung, Typische Fehler und Übungen (optional), in dieser Reihenfolge. Die CI prüft ihn.
+- 03.11.2026 (Aufgabe 3): Die ersten 24 Knoten hat Claude aus Fachwissen geschrieben, ohne Vorlagen der Dozenten.
+  Simon vergleicht sie mit den Vorlagen, danach kommen die Experten.
+- 03.11.2026 (Aufgabe 3): Module im Formelbuch mit denselben Kürzeln wie in der Ablage. `inhalt/module.yaml` hat nur
+  Module mit Formeln; Name und Semester pflegt die Ablage, der Studienplan zeigt fehlende Kürzel an.
+- 03.11.2026 (Aufgabe 3): Formeln und Text schon beim Build als HTML (KaTeX, markdown-it), im Browser nur CSS und
+  Schriften. Sinusgrössen mit dem Cosinus als Bezug, komplexe Zeiger als Effektivwertzeiger (mit Experten prüfen).
 
 ## Offen
 
@@ -76,22 +88,18 @@ eingeschaltet, Supabase noch nicht eingerichtet. Als Nächstes die Punkte unter 
    Anbindung an Supabase ist bisher nur gegen die Datenbank-Regeln geprüft.
 3. Studiengänge und Module des neuen Studienplans: nach der Einrichtung in der App unter «Studienplan» eintragen.
 4. Welche Module brauchen welches Simulationswerkzeug? (Aufgabe 5)
+5. Formelbuch: die 24 Knoten mit den Vorlagen der Dozenten vergleichen, dann Experten zeigen (Website oder
+   `npm run dev`). Rückmeldungen als neue Aufgabe.
+6. Modul-Kürzel in `inhalt/module.yaml` (vorerst `ETG1`, `ETG2`, `LEL` aus der Demo) an die echten im Studienplan
+   anpassen.
 
 ## Aufgaben
 
 1. **Architektur und Datenmodell** (erledigt, PR `simonbruder-hub/study-hub#1`).
 2. **Ablage für Formelsammlungen und Prüfungen** (erledigt, PR `simonbruder-hub/study-hub#3`; Doku in
    `docs/ARCHITEKTUR.md`, Abschnitt 3, und `supabase/README.md`).
-3. **Formelbuch: Grundgerüst und erste Themen** (früher Aufgabe 2): einige Themen als Formel-Knoten (Vorlagen der
-   Dozenten als Grundlage, stark angepasst, eigener Standard), Explorer und Prüfungs-Formelsammlung zum Drucken.
-   Danach Experten zeigen. Aufbau nach `docs/ARCHITEKTUR.md`, Abschnitt 4. Die Daten liefert
-   `npm run inhalt -- --json`, der Text wird dabei zu HTML. Die vier Beispielknoten nach dem eigenen Standard
-   überarbeiten.
-   Vorlage aus dem Modul «Effiziente Leistungselektronik» (28.10.2026 im Chat geteilt, Originale bleiben lokal):
-   ein Jupyter Book, Kapitel als `.ipynb` mit MyST-Markdown und ohne Code (Lernziele, Theorie mit nummerierten
-   Formeln, Übungen in Tabs, Lernkontrolle, Hinweise, Videos, Widgets, PLECS-Simulationen). Prüfen, ob der Text der
-   Knoten MyST-Markdown verwenden soll, damit sich die Vorlagen leichter übernehmen lassen. Module aus Supabase mit
-   `inhalt/module.yaml` abgleichen.
+3. **Formelbuch: Grundgerüst und erste Themen** (erledigt, PR `simonbruder-hub/study-hub#7`; Anleitung in
+   `docs/INHALTE.md`).
 4. **Lernlabor umziehen** (das Lernlabor ist vorerst stillgelegt; vor dem Start klären, ob der Umzug noch gewünscht
    ist): Simulator, Theorie und Aufgaben aus `apps/lernlabor/` übernehmen, die Theorie in
    Formel-Knoten überführen, Schaltungen an die Knoten hängen. Im Repo `apps` Startseite, Taktwerk-Links und eine
@@ -111,6 +119,10 @@ eingeschaltet, Supabase noch nicht eingerichtet. Als Nächstes die Punkte unter 
 10. **Backups der Ablage:** regelmässige Sicherung der Datenbank und der Originale im Speicher `eingang`, z. B. mit einer
     GitHub Action. Vorher klären, wo die Sicherung liegen darf (nicht im öffentlichen Repo).
 11. **Barrierefreiheit:** axe in den End-to-End-Tests, gefundene Probleme beheben.
+12. **Schaltbilder in Knoten:** eigene Bilder (SVG) neben dem Knoten und `{figure}` in der MyST-Teilmenge; die Prüfung
+    kontrolliert Datei, Grösse und Alternativtext. Viele Knoten (Teiler, Ersatzquelle, RC) brauchen eine Schaltung.
+13. **Ablage und Formelbuch verknüpfen:** beim Hochladen die nötigen Formeln wählen (`linked_formula_ids`), auf der
+    Knotenseite die passenden Prüfungen zeigen (nur mit Login).
 
 ## Technische Hinweise
 
