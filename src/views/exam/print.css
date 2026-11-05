@@ -10,6 +10,7 @@
 .exam-card h3 a { color: inherit; text-decoration: none; }
 .exam-card .katex-display { margin: 4px 0; }
 .exam-vars { display: flex; flex-wrap: wrap; gap: 0 12px; margin: 4px 0 0; padding: 0; list-style: none; font-size: 13px; color: var(--ink-2); }
+.exam-vars .unit { white-space: nowrap; } /* Klammer und Einheit bleiben zusammen */
 .picker { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); margin: 0; padding: 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
 .picker legend { font-weight: 700; padding: 0 6px; }
 .picker-topic { display: grid; gap: 4px; align-content: start; }

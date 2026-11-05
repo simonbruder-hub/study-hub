@@ -78,7 +78,7 @@ function ExamCard({ d, n, vars }: { d: Inhalt; n: FormulaNode; vars: boolean }) 
         <ul class="exam-vars">
           {n.variables.map((v, k) => {
             const q = d.quantities[v.quantity];
-            return <li key={k}><Tex html={v.symbol_html} /> {v.meaning ?? q?.name}{q && <> (<Tex html={q.unit_html} />)</>}</li>;
+            return <li key={k}><Tex html={v.symbol_html} /> {v.meaning ?? q?.name}{q && <> <span class="unit">(<Tex html={q.unit_html} />)</span></>}</li>;
           })}
         </ul>
       )}
