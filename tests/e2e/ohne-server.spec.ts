@@ -18,3 +18,10 @@ test('PWA: Manifest und Icons sind erreichbar', async ({ request }) => {
   expect(manifest.name).toBe('Study Hub');
   for (const icon of manifest.icons) expect((await request.get(icon.src)).ok(), icon.src).toBe(true);
 });
+
+test('Formelbuch läuft ohne Server: Knotenseite mit Formeln', async ({ page }) => {
+  await page.goto('/#/k/rc-laden');
+  await expect(page.getByRole('heading', { name: 'Laden eines Kondensators (RC)', level: 1 })).toBeVisible();
+  await expect(page.locator('.formula-box .katex').first()).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Analogie: Speicher mit Zeitkonstante' })).toBeVisible();
+});

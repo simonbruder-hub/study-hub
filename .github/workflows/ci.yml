@@ -21,7 +21,7 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - name: Inhalte prüfen (Schema, Verweise, Kreise, Analogien, LaTeX, Schreibregeln)
+      - name: Inhalte prüfen (Schema, Verweise, Kreise, Analogien, LaTeX, Gliederung, MyST, Schreibregeln)
         run: npm run inhalt
       - name: Unit-Tests (Inhalte, Wasserzeichen, PDF-Prüfung, Texte, Schreibregeln)
         run: npm test
@@ -45,5 +45,5 @@ jobs:
           npm run build:demo
       - name: Browser installieren
         run: npx playwright install --with-deps chromium
-      - name: End-to-End-Tests (Demo der Ablage ohne Server)
+      - name: End-to-End-Tests (Formelbuch und Ablage im Demo-Build, ohne Server)
         run: npm run test:e2e

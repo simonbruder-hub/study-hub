@@ -13,6 +13,11 @@
       "items": { "$ref": "#/$defs/id" },
       "uniqueItems": true
     },
+    "modul": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,31}$",
+      "description": "Kürzel eines Moduls wie in der Ablage (Supabase, Tabelle modules), z. B. ETG1"
+    },
     "latex": {
       "type": "string",
       "minLength": 1,

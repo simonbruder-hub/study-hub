@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { checkContent, mathInMarkdown, readContent, splitFrontMatter } from './inhalt.mjs';
+import { checkContent, readContent, splitFrontMatter } from './inhalt.mjs';
 
 const base = readContent();
 const OHM = 'knoten/gleichstrom/ohmsches-gesetz.md';
+const RC = 'knoten/schaltvorgaenge/rc-laden.md';
 const ANALOGIEN = 'analogien.yaml';
 
 /** Ersetzt a durch b in einer Datei der echten Inhalte (a muss vorkommen) */
@@ -10,6 +11,11 @@ function edit(file, a, b) {
   const text = base.get(file);
   if (!text.includes(a)) throw new Error(`«${a}» steht nicht in ${file}`);
   return text.replace(a, b);
+}
+/** Behält den YAML-Kopf einer Datei und ersetzt den Text */
+function withBody(file, body) {
+  const text = base.get(file);
+  return text.slice(0, text.indexOf('\n---\n', 4) + 5) + body;
 }
 /** Prüft die echten Inhalte mit geänderten Dateien (null löscht eine Datei) und gibt die Fehlertexte zurück */
 function errorsWith(changes) {
@@ -36,17 +42,28 @@ describe('echte Inhalte', () => {
     expect(ohm.required_by).toContain('rc-laden');
     expect(ohm.analogies).toContain('ohm-thermisch');
   });
+
+  it('bringen Text und Formeln schon als HTML mit', () => {
+    const ohm = data.nodes['ohmsches-gesetz'];
+    expect(ohm.latex_html).toContain('class="katex"');
+    expect(ohm.forms_html).toHaveLength(ohm.forms.length);
+    expect(ohm.variables[0].symbol_html).toContain('class="katex"');
+    expect(ohm.html).toContain('<h2>Gültigkeit</h2>');
+    expect(ohm.html).toContain('<details class="dropdown"><summary>Lösung</summary>');
+    expect(data.quantities.widerstand.unit_html).toContain('Ω');
+    for (const n of Object.values(data.nodes)) expect(n.html, n.id).toMatch(/^<p>/);
+  });
 });
 
 describe('Prüfung findet', () => {
   it('fehlende Module und Voraussetzungen', () => {
-    const e = errorsWith({ [OHM]: edit(OHM, 'modules: [et-grundlagen]', 'modules: [gibt-es-nicht]\nprerequisites: [fehlt-auch]') });
+    const e = errorsWith({ [OHM]: edit(OHM, 'modules: [ETG1]', 'modules: [gibt-es-nicht]\nprerequisites: [fehlt-auch]') });
     expect(e.join('\n')).toMatch(/Modul «gibt-es-nicht» fehlt/);
     expect(e.join('\n')).toMatch(/Voraussetzung «fehlt-auch» gibt es nicht/);
   });
 
   it('Kreise in den Voraussetzungen', () => {
-    const e = errorsWith({ [OHM]: edit(OHM, 'modules: [et-grundlagen]', 'modules: [et-grundlagen]\nprerequisites: [rc-laden]') });
+    const e = errorsWith({ [OHM]: edit(OHM, 'modules: [ETG1]', 'modules: [ETG1]\nprerequisites: [rc-laden]') });
     expect(e).toHaveLength(1);
     expect(e[0]).toMatch(/Kreis in den Voraussetzungen: (ohmsches-gesetz → rc-laden → ohmsches-gesetz|rc-laden → ohmsches-gesetz → rc-laden)/);
   });
@@ -65,8 +82,37 @@ describe('Prüfung findet', () => {
     expect(e).toMatch(/unbekanntes Feld «prerequisite»/);
   });
 
+  it('Modul-Kürzel wie in der Ablage', () => {
+    const e = errorsWith({
+      [OHM]: edit(OHM, 'modules: [ETG1]', 'modules: [ETG 1]'),
+      [RC]: edit(RC, 'modules: [ETG1]', 'modules: [etg1]'),
+    }).join('\n');
+    expect(e).toMatch(/ohmsches-gesetz\.md: modules\.0: hat nicht die erwartete Form/);
+    expect(e).toMatch(/rc-laden\.md: Modul «etg1» fehlt in module\.yaml/);
+  });
+
+  it('Verstösse gegen die Gliederung', () => {
+    const body = '## Beispiel\n\nAufgabe ohne Lösung.\n\n## Gültigkeit\n\nText.\n\n## Grenzen\n\nText.\n\n# Titel\n';
+    const e = errorsWith({ [OHM]: withBody(OHM, body) }).join('\n');
+    expect(e).toMatch(/Gliederung: Einleitung fehlt/);
+    expect(e).toMatch(/Beispiel: Lösung aufklappbar/);
+    expect(e).toMatch(/«Gültigkeit» an falscher Stelle/);
+    expect(e).toMatch(/Abschnitt «Grenzen» gibt es nicht/);
+    expect(e).toMatch(/Überschrift mit # gibt es nicht/);
+    const missing = errorsWith({ [OHM]: withBody(OHM, 'Nur eine Einleitung.\n') }).join('\n');
+    expect(missing).toMatch(/Abschnitt «## Gültigkeit» fehlt/);
+    expect(missing).toMatch(/Abschnitt «## Beispiel» fehlt/);
+  });
+
+  it('Fehler im Text mit der Zeile in der Datei', () => {
+    const text = withBody(OHM, 'Einleitung mit {k}`gibt-es-nicht`.\n\n## Gültigkeit\n\n:::{foo}\nx\n:::\n');
+    const first = text.split('\n').indexOf('Einleitung mit {k}`gibt-es-nicht`.') + 1;
+    const e = errorsWith({ [OHM]: text });
+    expect(e).toContain(`inhalt/${OHM}:${first}: Text: {k}: Knoten «gibt-es-nicht» gibt es nicht`);
+    expect(e.some((x) => x.startsWith(`inhalt/${OHM}:${first + 4}: Text: Direktive {foo}`))).toBe(true);
+  });
+
   it('Simulationen ohne Pflichtfeld des Werkzeugs', () => {
-    const RC = 'knoten/schaltvorgaenge/rc-laden.md';
     const e = errorsWith({ [RC]: edit(RC, 'tool: lernlabor, example: rc,', 'tool: plecs,') }).join('\n');
     expect(e).toMatch(/simulations\.0: Feld «file» fehlt/);
   });
@@ -100,10 +146,5 @@ describe('Hilfsfunktionen', () => {
   it('trennen YAML-Kopf und Text', () => {
     expect(splitFrontMatter('---\na: 1\n---\nText')).toEqual({ head: 'a: 1', body: 'Text' });
     expect(splitFrontMatter('kein Kopf')).toBeNull();
-  });
-
-  it('finden $...$ und $$...$$, aber nicht in Code oder bei Beträgen in Franken', () => {
-    const found = mathInMarkdown('a $x$ b $$y$$ `$z$` 5 $ und 6 $').map(([tex, display]) => [tex, display]);
-    expect(found).toEqual([['y', true], ['x', false]]);
   });
 });

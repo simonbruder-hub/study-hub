@@ -3,6 +3,9 @@ import { useEffect } from 'preact/hooks';
 import { lazyComponent } from './lazy';
 import { href, route } from './router';
 import { Home } from './views/Home';
+import { Exam } from './views/exam/Exam';
+import { Explorer } from './views/explorer/Explorer';
+import { NodePage } from './views/node/NodePage';
 
 // Die Ablage (Supabase, PDF.js, pdf-lib) lädt erst, wenn sie jemand öffnet
 const Vault = lazyComponent(() => import('./vault/Vault').then((m) => m.Vault));
@@ -21,6 +24,9 @@ function applyTheme(t: Theme) {
   try { localStorage.setItem(THEME_KEY, t); } catch { /* ohne Speicher */ }
 }
 
+/** Adressen des Formelbuchs: Explorer, Knoten, Formelsammlung */
+const isBook = (path: string) => path === '/explorer' || path.startsWith('/k/') || path === '/pruefung';
+
 const THEME_NEXT: Record<Theme, Theme> = { auto: 'light', light: 'dark', dark: 'auto' };
 const THEME_LABEL: Record<Theme, string> = { auto: 'Hell/Dunkel: automatisch', light: 'Hell', dark: 'Dunkel' };
 
@@ -33,7 +39,8 @@ function Header() {
         <span>Study Hub</span>
       </a>
       <nav aria-label="Hauptnavigation">
-        <a href={href('/')} class={path === '/' ? 'is-on' : ''}>Start</a>
+        <a href={href('/')} class={`nav-start${path === '/' ? ' is-on' : ''}`}>Start</a>
+        <a href={href('/explorer')} class={isBook(path) ? 'is-on' : ''}>Formelbuch</a>
         <a href={href('/ablage')} class={path.startsWith('/ablage') ? 'is-on' : ''}>Ablage</a>
       </nav>
       <button type="button" class="btn-icon theme-btn" title={THEME_LABEL[theme.value]} aria-label={THEME_LABEL[theme.value]}
@@ -51,6 +58,9 @@ function Header() {
 function Page() {
   const { path } = route.value;
   if (path === '/') return <Home />;
+  if (path === '/explorer') return <Explorer />;
+  if (path.startsWith('/k/')) return <NodePage id={decodeURIComponent(path.slice(3))} />;
+  if (path === '/pruefung') return <Exam />;
   if (path === '/ablage' || path.startsWith('/ablage/')) return <Vault />;
   return (
     <div class="page">

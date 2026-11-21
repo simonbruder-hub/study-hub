@@ -6,10 +6,13 @@ export function Home() {
       <section class="hero">
         <h1>Study Hub</h1>
         <p class="lead">
-          Formelsammlungen, Probeprüfungen und alte Prüfungen, geordnet nach Studiengang, Semester und Modul.
-          Von Studierenden für Studierende: Wer mit alten Prüfungen lernt, lernt auf dem richtigen Niveau.
+          Ein Formelbuch mit Erklärungen und Formelsammlungen zum Drucken. Dazu eine Ablage für Formelsammlungen,
+          Probeprüfungen und alte Prüfungen: Wer mit alten Prüfungen lernt, lernt auf dem richtigen Niveau.
         </p>
-        <p><a class="btn btn-primary" href={href('/ablage')}>Zur Ablage</a></p>
+        <p class="link-row">
+          <a class="btn btn-primary" href={href('/explorer')}>Zum Formelbuch</a>
+          <a class="btn" href={href('/ablage')}>Zur Ablage</a>
+        </p>
       </section>
 
       <section class="cards">
@@ -18,10 +21,15 @@ export function Home() {
           <p>Prüfungen, Probeprüfungen, Lösungen und Formelsammlungen ansehen und hochladen.
             Anmelden mit der Mail-Adresse für Studierende der Hochschule.</p>
         </a>
-        <div class="card card-muted">
-          <h2>Formelbuch <span class="chip">kommt später</span></h2>
-          <p>Vernetzte Formeln mit Grundlagen, Analogien, Simulationen und einer Formelsammlung zum Drucken.</p>
-        </div>
+        <a class="card card-link" href={href('/explorer')}>
+          <h2>Formelbuch</h2>
+          <p>Formeln mit Erklärung, Gültigkeit, Beispiel und Lösung, vernetzt über Voraussetzungen und Analogien.
+            Ohne Login und auch offline.</p>
+        </a>
+        <a class="card card-link" href={href('/pruefung')}>
+          <h2>Formelsammlung drucken</h2>
+          <p>Pro Modul oder mit eigener Auswahl, auf A4 in zwei oder drei Spalten.</p>
+        </a>
       </section>
 
       <section class="card">

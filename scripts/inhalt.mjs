@@ -1,7 +1,8 @@
 /**
  * Inhalte prüfen und zusammenführen. Liest inhalt/ (Knoten als Markdown mit YAML-Kopf, dazu themen.yaml,
- * groessen.yaml, module.yaml und analogien.yaml), prüft Schema, Verweise, Kreise, Analogien, LaTeX und
- * Schreibregeln und erzeugt daraus die Daten für die App.
+ * groessen.yaml, module.yaml und analogien.yaml), prüft Schema, Verweise, Kreise, Analogien, LaTeX, Gliederung
+ * und Schreibregeln und erzeugt daraus die Daten für die App: Text und Formeln schon als HTML (scripts/myst.mjs).
+ * Die App holt die Daten beim Build über das Plugin in vite.config.ts, Fehler brechen den Build ab.
  *
  *   npm run inhalt                      nur prüfen
  *   npm run inhalt -- --json out.json   prüfen und die Daten schreiben
@@ -10,12 +11,16 @@ import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { dirname, join, posix, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import Ajv2020 from 'ajv/dist/2020.js';
-import katex from 'katex';
 import { parse as parseYaml } from 'yaml';
+import { renderMyst, renderTex } from './myst.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const ID = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 const REGISTRIES = ['themen', 'groessen', 'module', 'analogien'];
+/** Eigener Standard für den Text eines Knotens (docs/INHALTE.md): Einleitung, dann diese Abschnitte in dieser Reihenfolge */
+export const SECTIONS = ['Herleitung', 'Gültigkeit', 'Beispiel', 'Typische Fehler', 'Übungen'];
+const REQUIRED = ['Gültigkeit', 'Beispiel'];
+const WITH_SOLUTION = ['Beispiel', 'Übungen'];
 
 /** Alle Dateien unter inhalt/: Pfad mit «/» → Text (.md, .yaml) oder null (Bilder, Modelle) */
 export function readContent(dir = join(ROOT, 'inhalt')) {
@@ -33,20 +38,9 @@ export function readContent(dir = join(ROOT, 'inhalt')) {
 
 /** YAML-Kopf zwischen zwei Zeilen «---» und der Markdown-Text danach */
 export function splitFrontMatter(text) {
-  const m = /^﻿?---\r?\n([\s\S]*?)\r?\n---[ \t]*(?:\r?\n|$)([\s\S]*)$/.exec(text);
+  const t = text.charCodeAt(0) === 0xfeff ? text.slice(1) : text; // BOM von Windows-Editoren
+  const m = /^---\r?\n([\s\S]*?)\r?\n---[ \t]*(?:\r?\n|$)([\s\S]*)$/.exec(t);
   return m && { head: m[1], body: m[2] };
-}
-
-/** Formeln im Markdown: $$...$$ (abgesetzt) und $...$ (im Text), nicht in Code. [tex, abgesetzt, Position] */
-export function mathInMarkdown(md) {
-  const blank = (s) => s.replace(/[^\n]/g, ' ');
-  const found = [];
-  const text = md
-    .replace(/```[\s\S]*?```/g, blank)
-    .replace(/`[^`\n]*`/g, blank)
-    .replace(/\$\$([\s\S]+?)\$\$/g, (m, tex, at) => (found.push([tex.trim(), true, at]), blank(m)));
-  for (const m of text.matchAll(/(?<![\\$])\$(?!\s)([^$\n]+?)(?<![\s\\])\$/g)) found.push([m[1], false, m.index]);
-  return found;
 }
 
 let validators;
@@ -63,12 +57,12 @@ function getValidators() {
 const TYPES = { object: 'Objekt', array: 'Liste', string: 'Text', integer: 'ganze Zahl', number: 'Zahl' };
 
 /** Meldungen von Ajv auf Deutsch, die häufigen Fälle */
-function german(e) {
+function german(e, file) {
   const p = e.params;
   switch (e.keyword) {
     case 'required': return `Feld «${p.missingProperty}» fehlt`;
     case 'additionalProperties': return `unbekanntes Feld «${p.additionalProperty}»`;
-    case 'propertyNames': return `ungültige ID «${p.propertyName}» (nur a-z, 0-9 und -)`;
+    case 'propertyNames': return `ungültige ID «${p.propertyName}» (${file === 'module.yaml' ? 'Kürzel wie in der Ablage: Buchstaben, Ziffern, Punkt, Strich' : 'nur a-z, 0-9 und -'})`;
     case 'enum': return `erlaubt sind nur: ${p.allowedValues.join(', ')}`;
     case 'type': return `muss ${String(p.type).split(',').map((t) => TYPES[t] ?? t).join(' oder ')} sein`;
     case 'pattern': return 'hat nicht die erwartete Form';
@@ -86,7 +80,7 @@ function schemaOk(validate, value, file, error) {
   if (validate(value)) return true;
   for (const e of validate.errors) {
     if (e.keyword === 'if' || e.propertyName !== undefined) continue; // doppelt zu then bzw. propertyNames
-    error(file, (e.instancePath ? `${e.instancePath.slice(1).replaceAll('/', '.')}: ` : '') + german(e));
+    error(file, (e.instancePath ? `${e.instancePath.slice(1).replaceAll('/', '.')}: ` : '') + german(e, file));
   }
   return false;
 }
@@ -116,17 +110,9 @@ export function checkContent(files) {
   const v = getValidators();
   const paths = [...files.keys()].sort();
 
-  const tex = (src, file, where, displayMode = false, line = undefined) => {
-    try {
-      katex.renderToString(src, {
-        displayMode,
-        throwOnError: true,
-        strict: (code, msg) => (warn(file, `${where}: KaTeX: ${msg}`, line), 'ignore'),
-      });
-    } catch (e) {
-      error(file, `${where}: LaTeX rendert nicht: ${e.message.replace(/^KaTeX parse error: /, '')}`, line);
-    }
-  };
+  /** LaTeX zu HTML; Fehler und Hinweise von KaTeX mit Ort und Zeile */
+  const tex = (src, file, where, displayMode = false, line = undefined) =>
+    renderTex(src, displayMode, (kind, msg) => (kind === 'error' ? error : warn)(file, `${where}: ${msg}`, line));
 
   // Schreibregeln: kein scharfes S, keine Gedankenstriche
   for (const file of paths) {
@@ -160,14 +146,19 @@ export function checkContent(files) {
       else topics.set(topic, discipline);
     }
   }
+  const quantities = {};
   for (const [id, q] of Object.entries(reg.groessen)) {
-    tex(q.symbol, 'groessen.yaml', `${id}.symbol`);
-    tex(`\\mathrm{${q.unit}}`, 'groessen.yaml', `${id}.unit`);
+    quantities[id] = {
+      ...q,
+      symbol_html: tex(q.symbol, 'groessen.yaml', `${id}.symbol`),
+      unit_html: tex(`\\mathrm{${q.unit}}`, 'groessen.yaml', `${id}.unit`),
+    };
   }
 
   // Knoten: knoten/<thema>/<id>.md, ID = Dateiname, Thema = Ordner
   const fileOf = new Map(); // ID → Datei, auch für Knoten mit Fehlern
   const nodes = {};
+  const texts = new Map(); // ID → Text und seine erste Zeile in der Datei
   for (const file of paths) {
     if (!file.startsWith('knoten/') || !file.endsWith('.md')) continue;
     const [, topic, name, ...deeper] = file.split('/');
@@ -193,20 +184,17 @@ export function checkContent(files) {
     }
     const y = readYaml(parts.head, file, error, 1);
     if (!y || !schemaOk(v.knoten, y.value, file, error)) continue;
-    const bodyLine = parts.head.split('\n').length + 3; // erste Zeile nach dem Kopf
-    nodes[id] = { id, file: `inhalt/${file}`, topic, discipline: topics.get(topic) ?? null, ...y.value, body: parts.body };
+    nodes[id] = { id, file: `inhalt/${file}`, topic, discipline: topics.get(topic) ?? null, ...y.value };
+    texts.set(id, { body: parts.body, line: parts.head.split('\n').length + 3 });
 
     const n = nodes[id];
     for (const m of n.modules ?? []) if (missing('module', m)) error(file, `Modul «${m}» fehlt in module.yaml`);
-    n.variables.forEach((va, i) => {
+    n.variables = n.variables.map((va, i) => {
       if (missing('groessen', va.quantity)) error(file, `variables.${i}: Grösse «${va.quantity}» fehlt in groessen.yaml`);
-      tex(va.symbol, file, `variables.${i}.symbol`);
+      return { ...va, symbol_html: tex(va.symbol, file, `variables.${i}.symbol`) };
     });
-    tex(n.latex_expression, file, 'latex_expression', true);
-    (n.forms ?? []).forEach((t, i) => tex(t, file, `forms.${i}`, true));
-    for (const [t, display, at] of mathInMarkdown(parts.body)) {
-      tex(t, file, 'Text', display, bodyLine + (parts.body.slice(0, at).match(/\n/g)?.length ?? 0));
-    }
+    n.latex_html = tex(n.latex_expression, file, 'latex_expression', true);
+    n.forms_html = (n.forms ?? []).map((t, i) => tex(t, file, `forms.${i}`, true));
     (n.learning_resources?.simulations ?? []).forEach((s, i) => {
       for (const key of ['file', 'image', 'result']) {
         if (s[key] && !files.has(posix.join(posix.dirname(file), s[key]))) {
@@ -214,6 +202,17 @@ export function checkContent(files) {
         }
       }
     });
+  }
+
+  // Text: MyST zu HTML, Gliederung nach dem Standard; {k} braucht dazu alle Knoten
+  const titleOf = (k) => nodes[k]?.title ?? (fileOf.has(k) ? k : undefined);
+  for (const [id, { body, line }] of texts) {
+    const file = fileOf.get(id);
+    const r = renderMyst(body, { id, title: titleOf });
+    for (const e of r.errors) error(file, `Text: ${e.msg}`, line + e.line);
+    for (const w of r.warnings) warn(file, `Text: ${w.msg}`, line + w.line);
+    checkOutline(r.outline, (l, msg) => error(file, `Gliederung: ${msg}`, line + l));
+    nodes[id].html = r.html;
   }
 
   // Voraussetzungen: vorhanden, nicht höher als der Knoten selbst, ohne Kreis
@@ -275,7 +274,7 @@ export function checkContent(files) {
   const data = {
     disciplines: Object.fromEntries(Object.entries(reg.themen).map(([id, d]) => [id, { title: d.title, topics: Object.keys(d.topics) }])),
     topics: Object.fromEntries([...topics].map(([t, d]) => [t, { title: reg.themen[d].topics[t], discipline: d }])),
-    quantities: reg.groessen,
+    quantities,
     modules: reg.module,
     analogies: reg.analogien,
     nodes: Object.fromEntries(sorted.map((n) => [n.id, {
@@ -287,11 +286,31 @@ export function checkContent(files) {
       analogies: analogiesOf[n.id] ?? [],
       learning_resources: n.learning_resources ?? {},
       sources: n.sources ?? [],
-      body: n.body.trim(),
     }])),
   };
   return { errors, warnings, data };
 }
+
+/** Gliederung nach dem eigenen Standard; report(zeile, meldung), Zeile ab 0 im Text */
+function checkOutline([intro, ...sections], report) {
+  if (intro.first !== 'paragraph_open') report(0, 'Einleitung fehlt: zuerst 1 bis 3 Sätze ohne Überschrift');
+  let last = -1;
+  for (const s of sections) {
+    if (s.depth === 1) {
+      report(s.line, 'eine Überschrift mit # gibt es nicht: der Titel steht im Kopf, Abschnitte beginnen mit ##');
+      continue;
+    }
+    const k = SECTIONS.indexOf(s.heading);
+    if (k < 0) report(s.line, `Abschnitt «${s.heading}» gibt es nicht (erlaubt: ${SECTIONS.join(', ')})`);
+    else if (k <= last) report(s.line, `«${s.heading}» an falscher Stelle (Reihenfolge: ${SECTIONS.join(', ')})`);
+    else last = k;
+    if (WITH_SOLUTION.includes(s.heading) && !s.dropdowns) report(s.line, `${s.heading}: Lösung aufklappbar in :::{dropdown} Lösung`);
+  }
+  for (const r of REQUIRED) if (!sections.some((s) => s.heading === r)) report(0, `Abschnitt «## ${r}» fehlt`);
+}
+
+/** Meldung als eine Zeile: Datei:Zeile: Text */
+export const formatProblem = (e) => `${e.file}${e.line ? `:${e.line}` : ''}: ${e.msg}`;
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const { errors, warnings, data } = checkContent(readContent());

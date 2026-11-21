@@ -2,10 +2,10 @@
 
 Diese Datei lädt in jedem Chat automatisch. Kurz halten, nur Orientierung; Details stehen in `docs/`.
 
-**Projekt:** Ablage für Formelsammlungen, Probeprüfungen und alte Prüfungen (Supabase, mit Login), danach ein
-vernetztes Formelbuch (statisch, offline). Studentenprojekt von Simon, öffentliches Repo, Website auf GitHub Pages.
+**Projekt:** Ablage für Formelsammlungen, Probeprüfungen und alte Prüfungen (Supabase, mit Login) und ein vernetztes
+Formelbuch (statisch, offline, ohne Login). Studentenprojekt von Simon, öffentliches Repo, Website auf GitHub Pages.
 Stack: Vite, Preact mit Signals, TypeScript, PWA, Hash-Routing; Supabase (Postgres, Auth mit Code, Storage);
-pdf-lib, PDF.js 6, KaTeX 0.18.
+pdf-lib, PDF.js 6, KaTeX 0.18, markdown-it (Text der Knoten als MyST-Teilmenge, beim Build).
 
 **Neuer Chat:** «Mach Aufgabe N aus docs/AUFGABEN.md.» Dort stehen Stand, Entscheide und Aufgaben. Es gilt zuerst
 `docs/AUFGABEN.md`, dann `docs/ARCHITEKTUR.md`, dann `docs/BRIEFING.md` (nur bei Bedarf lesen, ist Vorgeschichte).
@@ -28,7 +28,9 @@ pdf-lib, PDF.js 6, KaTeX 0.18.
 |---|---|
 | `src/vault/` | Ablage: `api.ts` (Schnittstelle), `supabaseApi.ts`, `demoApi.ts` (Beispieldaten), Ansichten, `watermark.ts` |
 | `supabase/schema.sql` | Tabellen, Regeln, Funktionen, Speicher; `supabase/test/` prüft alles; `supabase/README.md` Einrichtung |
-| `inhalt/`, `schema/`, `scripts/inhalt.mjs` | Formelbuch: Knoten und Register, JSON-Schemas, Prüfung |
+| `inhalt/`, `schema/`, `scripts/inhalt.mjs` | Formelbuch: Knoten und Register, JSON-Schemas, Prüfung; `scripts/myst.mjs` macht Text und Formeln zu HTML |
+| `src/data/`, `src/ui/formel.tsx`, `src/views/` | Formelbuch in der App: Daten (Plugin in `vite.config.ts`), Bausteine, Explorer, Knoten, Formelsammlung |
+| `docs/INHALTE.md` | Knoten schreiben: Gliederung, Formeln, MyST-Teilmenge, Vorlage |
 | `docs/ARCHITEKTUR.md` | 1 Inhalte, 2 Relationen, 3 Ablage, 4 Frontend, 5 nächste Aufgaben |
 | `tests/e2e/` | Playwright gegen Demo-Build (`dist/demo`) und Produktions-Build ohne Supabase (`dist/app`) |
 
@@ -36,7 +38,7 @@ pdf-lib, PDF.js 6, KaTeX 0.18.
 
 ```bash
 npm ci
-npm run dev             # http://localhost:5175; Ablage braucht .env.local (supabase/README.md)
+npm run dev             # http://localhost:5175; lädt bei Änderungen in inhalt/ neu; Ablage braucht .env.local
 npm run dev:demo        # Ablage ohne Server: Code 123456, admin@students.example.ch ist Admin
 npm run typecheck && npm test        # TypeScript, Unit-Tests, Schreibregeln
 npm run inhalt          # Inhalte des Formelbuchs prüfen
@@ -58,4 +60,6 @@ npm run build && npm run build:demo && PW_CHROMIUM=/opt/pw-browsers/chromium npm
   Anbindung ist erst mit dem echten Projekt testbar.
 - Chromium der Cloud verwirft Dateinamen mit Umlauten beim Herunterladen (die App schreibt sie darum aus).
 - `.npmrc` mit `legacy-peer-deps=true`, sonst bricht npm beim Auflösen von Vitest 5 ab.
+- Fehler in `inhalt/` brechen auch `npm run dev` und `npm run build` ab (Plugin in `vite.config.ts`), mit denselben
+  Meldungen wie `npm run inhalt`.
 - Repo-Einstellungen (Pages, Variablen, Branch-Schutz) macht Simon in GitHub.
